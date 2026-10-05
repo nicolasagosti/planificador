@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Values come from docs/SPEC.md (section 6) and the approved
+ * mockups in docs/mockups. Color means status and nothing else, so Tailwind's
+ * default palette is removed: only these colors exist. Shadows are removed
+ * too (no shadowed cards); inset borders use arbitrary values.
+ */
+@theme {
+  --color-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+
+  /* Ink on paper */
+  --color-page: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-ink: #171c28;
+  --color-ink-hover: #2e3545;
+  --color-muted: #535b6b;
+  --color-line: #d4d8e0;
+  --color-row-hover: #eceef3;
+  --color-control-hover: #e7e9ee;
+  --color-outside: #eef0f4;
+  --color-hollow: #717a8a;
+
+  /* Piece status */
+  --color-pending: #f4b700;
+  --color-pending-edge: #8f6b00;
+  --color-pending-soft: #fff2c2;
+  --color-done: #2457d6;
+  --color-done-soft: #e2eafd;
+  --color-delivered: #2e3545;
+  --color-delivered-soft: #e7e9ee;
+  --color-overdue: #d62b1f;
+  --color-overdue-soft: #fde8e5;
+  --color-overdue-text: #a51d13;
+
+  /* Type scale in the mockups' exact sizes */
+  --text-12: 12px;
+  --text-13: 13px;
+  --text-14: 14px;
+  --text-15: 15px;
+  --text-16: 16px;
+  --text-17: 17px;
+  --text-18: 18px;
+  --text-22: 22px;
+  --text-24: 24px;
+  --text-summary: clamp(20px, 2vw, 27px);
+  --text-headline: clamp(26px, 3.1vw, 42px);
+  --text-title: clamp(30px, 3.4vw, 46px);
+
+  /* Radii: squares, pieces, buttons and the calendar grid */
+  --radius-*: initial;
+  --radius-square-sm: 2px;
+  --radius-square: 3px;
+  --radius-piece: 6px;
+  --radius-button: 8px;
+  --radius-grid: 10px;
+
+  --container-page: 1296px;
+}
+
+@theme inline {
+  --font-sans:
+    var(--font-archivo), "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-page);
+  }
+
+  body {
+    color: var(--color-ink);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}

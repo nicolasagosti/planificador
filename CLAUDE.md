@@ -8,7 +8,9 @@ App web privada para que un community manager lleve los calendarios de contenido
 ## Antes de tocar código
 
 - Leé `docs/SPEC.md` antes de trabajar en reglas de negocio, en el modelo de datos o en una pantalla.
+- Leé también `docs/DECISIONES.md`: resuelve lo que la especificación no cubría y, donde no coinciden, vale sobre ella.
 - Antes de tocar una pantalla, mirá su PNG y su `.mockup.html` en `docs/mockups/`.
+- Antes de usar una API de Next.js, leé su guía en `node_modules/next/dist/docs/` (ver `AGENTS.md`): esta versión cambió respecto de las anteriores.
 - Si la especificación no cubre algo, preguntá. No inventes funcionalidad ni agregues nada que esté en su lista de "No construir".
 
 ## Reglas que no se rompen
@@ -40,4 +42,14 @@ App web privada para que un community manager lleve los calendarios de contenido
 
 ## Comandos
 
-Completar al terminar la fase 0: desarrollo, typecheck, lint, test, migraciones, seed y creación del usuario.
+- `npm run dev`: servidor de desarrollo en http://localhost:3000.
+- `npm run typecheck`: genera los tipos de rutas de Next (`next typegen`) y corre `tsc`.
+- `npm run lint`: ESLint y el chequeo de formato de Prettier. `npm run format` corrige el formato.
+- `npm test`: tests de Vitest. `npm run test:watch` los corre en modo observación.
+- `npm run build`: build de producción.
+- `npm run db:generate`: genera una migración SQL a partir del esquema. Desde la fase 1.
+- `npm run db:migrate`: aplica las migraciones pendientes en la base de `DATABASE_URL`. Desde la fase 1.
+- `npm run db:seed`: carga los datos de ejemplo de la sección 10 en la base de desarrollo. Se niega a correr en producción. Desde la fase 1.
+- `npm run user:create`: crea el usuario con `ADMIN_EMAIL` y `ADMIN_PASSWORD`, o le cambia la contraseña si ya existe. Desde la fase 2.
+
+Las variables de entorno están documentadas en `.env.example`. En desarrollo van en `.env.local`.
