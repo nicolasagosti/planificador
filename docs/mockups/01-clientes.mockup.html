@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Clientes</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap">
+<style>
+body{margin:0;background:#F6F7F9}
+a{color:#171C28}a:hover{color:#2457D6}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F6F7F9; color: #171C28; font-family: Archivo, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.45">
+
+<header style="border-bottom: 1px solid #D4D8E0">
+<div style="max-width: 1296px; margin: 0 auto; padding: 8px 32px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 24px">
+<a href="Main.dc.html" aria-current="page" style="display: flex; align-items: center; gap: 10px; min-height: 44px; text-decoration: none; color: #171C28; font-size: 17px; font-weight: 700; font-stretch: 112%; letter-spacing: -0.01em">
+<span aria-hidden="true" style="display: flex; gap: 3px">
+<span style="width: 10px; height: 10px; border-radius: 2px; background: #F4B700; box-shadow: inset 0 0 0 1px #8F6B00"></span>
+<span style="width: 10px; height: 10px; border-radius: 2px; background: #2457D6"></span>
+<span style="width: 10px; height: 10px; border-radius: 2px; background: #2E3545"></span>
+</span>
+<span>Planificador</span>
+</a>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; font-size: 14px; color: #535B6B">
+<span>Hoy es lunes 5 de octubre</span>
+<button type="button" style="min-height: 44px; padding: 0 4px; border: 0; background: none; font: inherit; font-weight: 600; color: #171C28; cursor: pointer; text-decoration: underline; text-underline-offset: 3px">Salir</button>
+</div>
+</div>
+</header>
+
+<main style="max-width: 1296px; margin: 0 auto; padding: 24px 32px 72px; box-sizing: border-box">
+
+<div style="display: flex; align-items: center; gap: 2px; margin-left: -12px">
+<button type="button" aria-label="Mes anterior" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: none; color: #171C28; cursor: pointer" style-hover="background: #E7E9EE">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+</button>
+<span style="min-width: 112px; text-align: center; font-size: 15px; font-weight: 600">Octubre 2026</span>
+<button type="button" aria-label="Mes siguiente" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: none; color: #171C28; cursor: pointer" style-hover="background: #E7E9EE">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</button>
+</div>
+
+<h1 style="margin: 10px 0 0; max-width: 1020px; font-size: clamp(26px, 3.1vw, 42px); line-height: 1.2; font-weight: 500; font-stretch: 108%; letter-spacing: -0.015em; text-wrap: balance">Debés <span style="white-space: nowrap"><span aria-hidden="true" style="display: inline-block; width: 0.55em; height: 0.55em; border-radius: 0.12em; background: #F4B700; box-shadow: inset 0 0 0 2px #8F6B00; margin-right: 0.22em"></span><strong style="font-weight: 800">25</strong> piezas</span>, tenés <span style="white-space: nowrap"><span aria-hidden="true" style="display: inline-block; width: 0.55em; height: 0.55em; border-radius: 0.12em; background: #2457D6; margin-right: 0.22em"></span><strong style="font-weight: 800">9</strong> hechas</span> sin entregar y ya entregaste <span style="white-space: nowrap"><span aria-hidden="true" style="display: inline-block; width: 0.55em; height: 0.55em; border-radius: 0.12em; background: #2E3545; margin-right: 0.22em"></span><strong style="font-weight: 800">13</strong>.</span></h1>
+
+<p style="margin: 20px 0 0; max-width: 760px; font-size: 18px"><span aria-hidden="true" style="display: inline-block; width: 12px; height: 12px; border-radius: 2px; background: #D62B1F; transform: rotate(45deg); margin: 0 13px 1px 4px"></span><strong style="font-weight: 700; color: #A51D13">3 están atrasadas:</strong> 2 de Óptica Mirador y 1 de Café Lumbre.</p>
+
+<p style="margin: 8px 0 0; max-width: 760px; font-size: 15px; color: #535B6B"><span aria-hidden="true" style="display: inline-block; width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #717A8A; margin: 0 13px -1px 3px"></span>No cuentan todavía: 8 piezas de Estudio Pampa, que tiene el calendario sin aprobar, y 6 de Impulso Funcional, que sigue en borrador.</p>
+
+<div style="margin-top: 44px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 32px">
+<h2 style="margin: 0; font-size: 22px; font-weight: 700; font-stretch: 108%; letter-spacing: -0.01em">Clientes</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 0 22px">
+<button type="button" aria-pressed="true" style="min-height: 44px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 600; color: #171C28; cursor: pointer; box-shadow: inset 0 -2px 0 #171C28">Todos (6)</button>
+<button type="button" aria-pressed="false" style="min-height: 44px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 500; color: #535B6B; cursor: pointer" style-hover="color: #171C28">Con atrasos (2)</button>
+<button type="button" aria-pressed="false" style="min-height: 44px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 500; color: #535B6B; cursor: pointer" style-hover="color: #171C28">Esperando aprobación (1)</button>
+<button type="button" aria-pressed="false" style="min-height: 44px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; font-weight: 500; color: #535B6B; cursor: pointer" style-hover="color: #171C28">En borrador (1)</button>
+</div>
+</div>
+<button type="button" style="min-height: 44px; padding: 0 18px 0 14px; display: flex; align-items: center; gap: 8px; border: 0; border-radius: 8px; background: #171C28; color: #FFFFFF; font: inherit; font-weight: 600; cursor: pointer" style-hover="background: #2E3545">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+<span>Nuevo cliente</span>
+</button>
+</div>
+
+<div style="margin-top: 10px; overflow-x: auto">
+<div style="min-width: 1040px">
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.1fr) 196px 64px 68px 96px minmax(0, 1.5fr) 124px 20px; column-gap: 20px; align-items: end; padding: 10px 12px; border-bottom: 1.5px solid #171C28; font-size: 13px; font-weight: 600; color: #535B6B">
+<div>Cliente</div>
+<div>Calendario de octubre</div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 2px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span><span>Debés</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 2px; background: #2457D6"></span><span>Hechas</span></div>
+<div style="display: flex; align-items: center; justify-content: flex-end; gap: 6px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 2px; background: #2E3545"></span><span>Entregadas</span></div>
+<div>Octubre, pieza por pieza</div>
+<div>Próxima entrega</div>
+<div></div>
+</div>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.1fr) 196px 64px 68px 96px minmax(0, 1.5fr) 124px 20px; column-gap: 20px; align-items: center; padding: 16px 12px; border-bottom: 1px solid #D4D8E0">
+<div>
+<div style="font-size: 17px; font-weight: 700; font-stretch: 105%">Óptica Mirador</div>
+<div style="font-size: 13px; color: #535B6B">Óptica</div>
+</div>
+<div>
+<div style="display: flex; align-items: center; gap: 7px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#171C28"></circle><path d="M4.6 8.3l2.2 2.2 4.6-4.9" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Aprobado</span></div>
+<div style="padding-left: 23px; font-size: 13px; color: #535B6B">el 29 sep</div>
+</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">7</div>
+<div style="text-align: right; font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; color: #535B6B">0</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">1</div>
+<div role="img" aria-label="8 piezas: 1 entregada y 7 pendientes, 2 de ellas atrasadas" style="display: flex; flex-wrap: wrap; gap: 3px">
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #D62B1F; transform: rotate(45deg) scale(0.8)"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #D62B1F; transform: rotate(45deg) scale(0.8)"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+</div>
+<div>
+<div style="font-weight: 600">vie 2 oct</div>
+<div style="font-size: 13px; font-weight: 600; color: #A51D13">2 atrasadas</div>
+</div>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#535B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</div>
+
+<a href="Cliente.dc.html" style="display: grid; grid-template-columns: minmax(0, 1.1fr) 196px 64px 68px 96px minmax(0, 1.5fr) 124px 20px; column-gap: 20px; align-items: center; padding: 16px 12px; border-bottom: 1px solid #D4D8E0; text-decoration: none; color: #171C28" style-hover="background: #ECEEF3">
+<div>
+<div style="font-size: 17px; font-weight: 700; font-stretch: 105%">Café Lumbre</div>
+<div style="font-size: 13px; color: #535B6B">Cafetería de especialidad</div>
+</div>
+<div>
+<div style="display: flex; align-items: center; gap: 7px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#171C28"></circle><path d="M4.6 8.3l2.2 2.2 4.6-4.9" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Aprobado</span></div>
+<div style="padding-left: 23px; font-size: 13px; color: #535B6B">el 28 sep</div>
+</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">10</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">2</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">3</div>
+<div role="img" aria-label="15 piezas: 3 entregadas, 2 hechas y 10 pendientes, 1 de ellas atrasada" style="display: flex; flex-wrap: wrap; gap: 3px">
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #D62B1F; transform: rotate(45deg) scale(0.8)"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2457D6"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2457D6"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+</div>
+<div>
+<div style="font-weight: 600">vie 2 oct</div>
+<div style="font-size: 13px; font-weight: 600; color: #A51D13">1 atrasada</div>
+</div>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#171C28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</a>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.1fr) 196px 64px 68px 96px minmax(0, 1.5fr) 124px 20px; column-gap: 20px; align-items: center; padding: 16px 12px; border-bottom: 1px solid #D4D8E0">
+<div>
+<div style="font-size: 17px; font-weight: 700; font-stretch: 105%">Vivero Las Lilas</div>
+<div style="font-size: 13px; color: #535B6B">Vivero</div>
+</div>
+<div>
+<div style="display: flex; align-items: center; gap: 7px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#171C28"></circle><path d="M4.6 8.3l2.2 2.2 4.6-4.9" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Aprobado</span></div>
+<div style="padding-left: 23px; font-size: 13px; color: #535B6B">el 30 sep</div>
+</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">5</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">4</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">3</div>
+<div role="img" aria-label="12 piezas: 3 entregadas, 4 hechas y 5 pendientes" style="display: flex; flex-wrap: wrap; gap: 3px">
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2457D6"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2457D6"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2457D6"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2457D6"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+</div>
+<div>
+<div style="font-weight: 600">mar 6 oct</div>
+<div style="font-size: 13px; color: #535B6B">ya está hecha</div>
+</div>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#535B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</div>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.1fr) 196px 64px 68px 96px minmax(0, 1.5fr) 124px 20px; column-gap: 20px; align-items: center; padding: 16px 12px; border-bottom: 1px solid #D4D8E0">
+<div>
+<div style="font-size: 17px; font-weight: 700; font-stretch: 105%">Panadería La Espiga</div>
+<div style="font-size: 13px; color: #535B6B">Panadería</div>
+</div>
+<div>
+<div style="display: flex; align-items: center; gap: 7px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#171C28"></circle><path d="M4.6 8.3l2.2 2.2 4.6-4.9" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Aprobado</span></div>
+<div style="padding-left: 23px; font-size: 13px; color: #535B6B">el 25 sep</div>
+</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">3</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">3</div>
+<div style="text-align: right; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums">6</div>
+<div role="img" aria-label="12 piezas: 6 entregadas, 3 hechas y 3 pendientes" style="display: flex; flex-wrap: wrap; gap: 3px">
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2E3545"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2457D6"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2457D6"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #2457D6"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; background: #F4B700; box-shadow: inset 0 0 0 1.5px #8F6B00"></span>
+</div>
+<div>
+<div style="font-weight: 600">mié 7 oct</div>
+<div style="font-size: 13px; color: #535B6B">ya está hecha</div>
+</div>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#535B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</div>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.1fr) 196px 64px 68px 96px minmax(0, 1.5fr) 124px 20px; column-gap: 20px; align-items: center; padding: 16px 12px; border-bottom: 1px solid #D4D8E0">
+<div>
+<div style="font-size: 17px; font-weight: 700; font-stretch: 105%">Estudio Pampa</div>
+<div style="font-size: 13px; color: #535B6B">Estudio de arquitectura</div>
+</div>
+<div>
+<div style="display: flex; align-items: center; gap: 7px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10.5 13.5"></path><path d="M21 3l-6.5 18-4-7.5L3 9.5 21 3z"></path></svg><span>Enviado</span></div>
+<div style="padding-left: 23px; font-size: 13px; color: #535B6B">hace 4 días, sin respuesta</div>
+</div>
+<div style="text-align: right; font-size: 22px; font-weight: 500; color: #535B6B">–</div>
+<div style="text-align: right; font-size: 22px; font-weight: 500; color: #535B6B">–</div>
+<div style="text-align: right; font-size: 22px; font-weight: 500; color: #535B6B">–</div>
+<div role="img" aria-label="8 piezas planificadas que todavía no cuentan" style="display: flex; flex-wrap: wrap; gap: 3px">
+<span style="width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #717A8A"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #717A8A"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #717A8A"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #717A8A"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #717A8A"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #717A8A"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #717A8A"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #717A8A"></span>
+</div>
+<div style="font-size: 13px; color: #535B6B">Cuando apruebe</div>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#535B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</div>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.1fr) 196px 64px 68px 96px minmax(0, 1.5fr) 124px 20px; column-gap: 20px; align-items: center; padding: 16px 12px; border-bottom: 1px solid #D4D8E0">
+<div>
+<div style="font-size: 17px; font-weight: 700; font-stretch: 105%">Impulso Funcional</div>
+<div style="font-size: 13px; color: #535B6B">Gimnasio</div>
+</div>
+<div>
+<div style="display: flex; align-items: center; gap: 7px; font-weight: 600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5l-4-4L4 16v4z"></path><path d="M13.5 6.5l4 4"></path></svg><span>Borrador</span></div>
+<div style="padding-left: 23px; font-size: 13px; color: #535B6B">sin enviar</div>
+</div>
+<div style="text-align: right; font-size: 22px; font-weight: 500; color: #535B6B">–</div>
+<div style="text-align: right; font-size: 22px; font-weight: 500; color: #535B6B">–</div>
+<div style="text-align: right; font-size: 22px; font-weight: 500; color: #535B6B">–</div>
+<div role="img" aria-label="6 piezas cargadas en borrador" style="display: flex; flex-wrap: wrap; gap: 3px">
+<span style="width: 13px; height: 13px; border-radius: 3px; border: 1.5px dashed #717A8A; box-sizing: border-box"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; border: 1.5px dashed #717A8A; box-sizing: border-box"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; border: 1.5px dashed #717A8A; box-sizing: border-box"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; border: 1.5px dashed #717A8A; box-sizing: border-box"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; border: 1.5px dashed #717A8A; box-sizing: border-box"></span>
+<span style="width: 13px; height: 13px; border-radius: 3px; border: 1.5px dashed #717A8A; box-sizing: border-box"></span>
+</div>
+<div style="font-size: 13px; color: #535B6B">Cuando lo envíes</div>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#535B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</div>
+
+</div>
+</div>
+
+<div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 24px; font-size: 13px; color: #535B6B">
+<span>Ordenados por urgencia: primero los que tienen piezas atrasadas.</span>
+<button type="button" style="min-height: 44px; padding: 0; border: 0; background: none; font: inherit; font-weight: 600; color: #171C28; cursor: pointer; text-decoration: underline; text-underline-offset: 3px">Ver clientes archivados</button>
+</div>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":1068}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
