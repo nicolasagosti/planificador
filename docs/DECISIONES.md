@@ -30,6 +30,22 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 - El 12 de octubre no dice "feriado".
 - Los textos que la especificación no fija se proponen en la fase de cada pantalla y se anotan acá cuando se aprueban.
 
+### Login
+
+- Título "Entrá con tu cuenta", campos "Email" y "Contraseña", botón "Entrar" ("Entrando…" mientras espera).
+- Errores, en un recuadro con borde de tinta y sin rojo, porque el rojo significa "atrasada":
+  - "El email o la contraseña no son correctos."
+  - "Hiciste demasiados intentos. Esperá un minuto y probá de nuevo."
+  - "No pudimos iniciar la sesión. Probá de nuevo en un momento."
+- Si se llegó al login desde otra página, después de entrar se vuelve a esa página. Solo se aceptan rutas de la app.
+
+## Acceso y seguridad
+
+- **Límite de intentos:** 5 logins por minuto por IP, guardados en Postgres. En memoria no serviría en Vercel, porque cada instancia contaría aparte. El límite de Better Auth solo vale para los pedidos a `/api/auth`, así que el formulario de login entra por ahí y no por una Server Action.
+- **Verificación de la sesión:** el proxy solo mira que exista la cookie, para mandar rápido a `/login`. La sesión se verifica de verdad en cada página, Server Action, route handler y consulta (`requireUser()`).
+- **Content Security Policy con nonce por request.** Por eso todas las páginas se renderizan por request.
+- **Duración de la sesión:** la de Better Auth por defecto, 7 días, que se renuevan con el uso.
+
 ## Datos de ejemplo
 
 - Además de los temas, se inventaron los datos de contacto, las notas y el "cliente desde" de los clientes que no son Café Lumbre, con teléfonos ficticios `11 5555-01xx`.
@@ -39,6 +55,8 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 ## Calidad y proceso
 
 - **TypeScript 6.0 y ESLint 9**, no las últimas (7 y 10): typescript-eslint todavía no soporta TypeScript 7, y los plugins de `eslint-config-next` no soportan ESLint 10.
+- **Driver de base: `pg` (node-postgres) por TCP**, no `@neondatabase/serverless`. Es lo que Neon recomienda hoy para Vercel con Fluid compute: un pool por instancia, con `attachDatabasePool` de `@vercel/functions` para cerrar las conexiones inactivas antes de que la función se suspenda. Soporta transacciones. El driver de Neon queda para entornos sin proceso persistente.
+- **Deploy:** funciones en São Paulo (`gru1`), en la misma región que la base. Las migraciones se aplican en el build, solo en el deploy de producción y por la conexión directa.
 - **Un commit por fase**, en `main`.
 - **Test de punta a punta en producción.** Corre una vez, antes de que el community manager empiece a usar la app, con un cliente "Prueba E2E" que el test archiva al final. Después ese cliente se borra de la base, con aprobación previa.
 

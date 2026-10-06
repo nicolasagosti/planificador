@@ -25,11 +25,36 @@ export function isProduction(): boolean {
   return process.env.VERCEL_ENV === "production";
 }
 
+const postgresUrl = z
+  .string()
+  .regex(/^postgres(ql)?:\/\//, "must be a postgres:// URL");
+
 export function databaseUrl(): string {
-  return read(
-    "DATABASE_URL",
-    z.string().regex(/^postgres(ql)?:\/\//, "must be a postgres:// URL"),
-  );
+  return read("DATABASE_URL", postgresUrl);
+}
+
+/**
+ * Migrations prefer the direct (unpooled) connection that the Neon
+ * integration adds on Vercel, and fall back to DATABASE_URL.
+ */
+export function migrationDatabaseUrl(): string {
+  return read("DATABASE_URL_UNPOOLED", optional(postgresUrl)) ?? databaseUrl();
+}
+
+export function authSecret(): string {
+  return read("BETTER_AUTH_SECRET", z.string().min(32));
+}
+
+/**
+ * Public URL of the app, used by Better Auth for cookies and origin checks.
+ * On Vercel it defaults to the project's production domain.
+ */
+export function authUrl(): string {
+  const productionDomain = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (!process.env.BETTER_AUTH_URL && productionDomain) {
+    return `https://${productionDomain}`;
+  }
+  return read("BETTER_AUTH_URL", z.url({ protocol: /^https?$/ }));
 }
 
 export function appTimeZone(): string {

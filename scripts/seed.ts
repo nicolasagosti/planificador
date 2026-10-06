@@ -3,7 +3,7 @@
 // or against a database that has any other user.
 import "./load-env";
 import { eq, inArray, ne } from "drizzle-orm";
-import { createDb } from "@/db/connection";
+import { createDb, createPool } from "@/db/connection";
 import { upsertCredentialUser } from "@/db/credential-user";
 import {
   calendarEvents,
@@ -27,7 +27,8 @@ if (isProduction() || process.env.NODE_ENV === "production") {
 }
 
 const { email, password } = adminCredentials();
-const { db, close } = createDb(databaseUrl());
+const pool = createPool(databaseUrl());
+const db = createDb(pool);
 
 try {
   const totals = await db.transaction(async (tx) => {
@@ -147,5 +148,5 @@ try {
     `Seeded ${totals.clients} clients, ${totals.calendars} calendars and ${totals.pieces} pieces for ${email}.`,
   );
 } finally {
-  await close();
+  await pool.end();
 }
