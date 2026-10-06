@@ -30,6 +30,40 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 - El 12 de octubre no dice "feriado".
 - Los textos que la especificación no fija se proponen en la fase de cada pantalla y se anotan acá cuando se aprueban.
 
+### Textos propuestos (fase 3, a confirmar al ver cada pantalla)
+
+Están en `src/domain/phrases.ts` y tienen tests. Los de la especificación salen tal cual; estos son los que no fijaba.
+
+- **Clientes**
+  - Todo entregado con una sola pieza: "Estás al día: entregaste la única pieza de octubre."
+  - Atrasadas de un solo cliente: "1 está atrasada: es de Café Lumbre." y "2 están atrasadas: son de Óptica Mirador."
+  - Calendario enviado hoy o ayer: "hoy, sin respuesta" y "ayer, sin respuesta".
+  - "Próxima entrega" con todo entregado: "Todo entregado".
+  - "No cuentan todavía" con varios clientes: "8 piezas de Estudio Pampa y 5 de Vivero, que tienen el calendario sin aprobar, y 2 de Alfa y 3 de Beta, que siguen en borrador."
+- **Cliente**
+  - Todo entregado: "Estás al día: le entregaste las 15 piezas de octubre." Con una sola: "…la única pieza de octubre."
+  - Mes sin calendario: "Todavía no hay calendario de octubre para Café Lumbre.", con la acción "Crear calendario de octubre".
+  - Mes en borrador: "El calendario de octubre está en borrador: todavía no se lo mandaste.", con "Seguir armándolo".
+  - Mes enviado: "Le mandaste el calendario de octubre el 1 oct y todavía no lo aprobó.", con "Marcar como aprobado".
+  - Tabla de calendarios, uno enviado: "Enviado el 1 oct, sin respuesta".
+- **Calendario**
+  - Enviado hoy o ayer: "Enviado hoy." y "Enviado ayer."
+  - Pasos de una pieza marcada en el día: "hoy".
+  - Archivo sin nombre: se muestra el sitio del link ("drive.google.com").
+  - La leyenda nombra solo las redes que usa el calendario ("IG es Instagram, FB es Facebook y TT es TikTok").
+- **Avisos cuando el servidor rechaza un cambio**
+  - "Agregá al menos una pieza para poder enviarlo."
+  - "El calendario cambió de estado mientras tanto. Recargá la página."
+  - "El estado de las piezas cambia solo en un calendario aprobado."
+  - "La pieza cambió mientras tanto. Recargá la página y probá de nuevo."
+- **Validaciones:** los mensajes están en `src/domain/schemas.ts`. Topes que la especificación no daba:
+  - nombre, rubro y contacto del cliente, 120 caracteres;
+  - teléfono, 40;
+  - "Cómo aprueba", 1000;
+  - notas, 2000;
+  - nombre del archivo, 200;
+  - link, 2000.
+
 ### Login
 
 - Título "Entrá con tu cuenta" y botón "Entrar con Google" ("Yendo a Google…" mientras espera).
