@@ -2,13 +2,22 @@ import "server-only";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
+import { isAllowedEmail } from "@/lib/access";
+import { allowedEmail } from "@/lib/env";
 import { getAuth } from "./auth";
 
 export type SessionUser = { id: string; email: string };
 
-/** The current session, read from the database once per request. */
+/**
+ * The current session, read from the database once per request. A session
+ * of any account other than ADMIN_EMAIL (if it ever changes) counts as none.
+ */
 export const getSession = cache(async () => {
-  return getAuth().api.getSession({ headers: await headers() });
+  const session = await getAuth().api.getSession({ headers: await headers() });
+  if (!session || !isAllowedEmail(session.user.email, allowedEmail())) {
+    return null;
+  }
+  return session;
 });
 
 /**

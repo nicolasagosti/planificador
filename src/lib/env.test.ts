@@ -1,8 +1,38 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { authUrl, fakeToday, isProduction, migrationDatabaseUrl } from "./env";
+import {
+  allowedEmail,
+  authUrl,
+  fakeToday,
+  googleCredentials,
+  isProduction,
+  migrationDatabaseUrl,
+} from "./env";
 
 afterEach(() => {
   vi.unstubAllEnvs();
+});
+
+describe("allowedEmail", () => {
+  it("is ADMIN_EMAIL, normalized", () => {
+    vi.stubEnv("ADMIN_EMAIL", " Ana@Example.com ");
+    expect(allowedEmail()).toBe("ana@example.com");
+  });
+});
+
+describe("googleCredentials", () => {
+  it("is both values or nothing", () => {
+    vi.stubEnv("GOOGLE_CLIENT_ID", "");
+    vi.stubEnv("GOOGLE_CLIENT_SECRET", "");
+    expect(googleCredentials()).toBeUndefined();
+    vi.stubEnv("GOOGLE_CLIENT_ID", "id.apps.googleusercontent.com");
+    vi.stubEnv("GOOGLE_CLIENT_SECRET", "secret");
+    expect(googleCredentials()).toEqual({
+      clientId: "id.apps.googleusercontent.com",
+      clientSecret: "secret",
+    });
+    vi.stubEnv("GOOGLE_CLIENT_SECRET", "");
+    expect(() => googleCredentials()).toThrow("GOOGLE_CLIENT_SECRET");
+  });
 });
 
 describe("authUrl", () => {

@@ -14,7 +14,7 @@ const MESSAGES = {
 const inputClass =
   "min-h-11 rounded-button border border-hollow bg-surface px-3 text-15 text-ink focus-visible:border-ink";
 
-export function LoginForm({ next }: { next: string }) {
+export function PasswordLoginForm({ next }: { next: string }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -49,7 +49,7 @@ export function LoginForm({ next }: { next: string }) {
     <form
       method="post"
       onSubmit={handleSubmit}
-      className="mt-8 flex flex-col gap-5"
+      className="mt-3 flex flex-col gap-5"
     >
       {error && (
         <p

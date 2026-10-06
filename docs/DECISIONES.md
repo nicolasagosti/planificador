@@ -19,7 +19,7 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 - **Link de archivo.** Se edita en calendarios aprobados, con la pieza en cualquier estado. En borrador y enviado no se muestra.
 - **Eliminar un calendario reabierto.** Está permitido. La confirmación avisa que el cliente ya lo había aprobado y que se borra esa constancia.
 - **Producción** es `VERCEL_ENV=production`. Ahí se ignora `APP_FAKE_TODAY`. El seed se niega a correr con `VERCEL_ENV` o `NODE_ENV` en `production`, y también si la base tiene un usuario que no es el de desarrollo.
-- **Cambiar la contraseña** con el script de usuario cierra todas las sesiones abiertas.
+- **Cambiar la contraseña** del usuario de desarrollo (con el seed) cierra todas sus sesiones abiertas.
 - **Momentos.** `updated_at`, y más adelante `done_at` y `delivered_at`, toman la hora de la base (`now()`), no la del servidor de la app.
 
 ## Pantallas
@@ -32,8 +32,13 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 
 ### Login
 
-- Título "Entrá con tu cuenta", campos "Email" y "Contraseña", botón "Entrar" ("Entrando…" mientras espera).
+- Título "Entrá con tu cuenta" y botón "Entrar con Google" ("Yendo a Google…" mientras espera).
+- El botón usa el estilo de la app y no el logo de colores de Google, para respetar que el color significa estado. Las pautas de marca de Google solo se exigen si la app de OAuth se publica y verifica.
+- Fuera de producción, debajo y con el título "Con contraseña, solo en desarrollo": campos "Email" y "Contraseña" y botón "Entrar" ("Entrando…" mientras espera).
 - Errores, en un recuadro con borde de tinta y sin rojo, porque el rojo significa "atrasada":
+  - "Esa cuenta de Google no tiene acceso al Planificador."
+  - "No se completó el ingreso con Google."
+  - "No pudimos entrar con Google. Probá de nuevo."
   - "El email o la contraseña no son correctos."
   - "Hiciste demasiados intentos. Esperá un minuto y probá de nuevo."
   - "No pudimos iniciar la sesión. Probá de nuevo en un momento."
@@ -41,7 +46,12 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 
 ## Acceso y seguridad
 
-- **Límite de intentos:** 5 logins por minuto por IP, guardados en Postgres. En memoria no serviría en Vercel, porque cada instancia contaría aparte. El límite de Better Auth solo vale para los pedidos a `/api/auth`, así que el formulario de login entra por ahí y no por una Server Action.
+- **Login con Google** (decidido el 6 de octubre de 2026, en lugar del email y la contraseña de la sección 7 de la especificación):
+  - En producción es la única forma de entrar.
+  - Solo puede entrar la cuenta de Google de `ADMIN_EMAIL`, y su primer ingreso crea el usuario. Better Auth no deja crear otro usuario ni abrir sesión con otra cuenta, y una sesión de otra cuenta cuenta como ninguna.
+  - El script `user:create` se eliminó.
+  - El email y la contraseña quedan solo fuera de producción, para desarrollo y para los tests de navegador, porque el login de Google no se puede automatizar.
+- **Límite de intentos:** 5 logins con contraseña por minuto por IP, guardados en Postgres. En memoria no serviría en Vercel, porque cada instancia contaría aparte. El límite de Better Auth solo vale para los pedidos a `/api/auth`, así que el login entra por ahí y no por una Server Action.
 - **Verificación de la sesión:** el proxy solo mira que exista la cookie, para mandar rápido a `/login`. La sesión se verifica de verdad en cada página, Server Action, route handler y consulta (`requireUser()`).
 - **Content Security Policy con nonce por request.** Por eso todas las páginas se renderizan por request.
 - **Duración de la sesión:** la de Better Auth por defecto, 7 días, que se renuevan con el uso.
@@ -58,7 +68,7 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 - **Driver de base: `pg` (node-postgres) por TCP**, no `@neondatabase/serverless`. Es lo que Neon recomienda hoy para Vercel con Fluid compute: un pool por instancia, con `attachDatabasePool` de `@vercel/functions` para cerrar las conexiones inactivas antes de que la función se suspenda. Soporta transacciones. El driver de Neon queda para entornos sin proceso persistente.
 - **Deploy:** funciones en São Paulo (`gru1`), en la misma región que la base. Las migraciones se aplican en el build, solo en el deploy de producción y por la conexión directa.
 - **Un commit por fase**, en `main`.
-- **Test de punta a punta en producción.** Corre una vez, antes de que el community manager empiece a usar la app, con un cliente "Prueba E2E" que el test archiva al final. Después ese cliente se borra de la base, con aprobación previa.
+- **Test de punta a punta en producción.** Corre una vez, antes de que el community manager empiece a usar la app, con un cliente "Prueba E2E" que el test archiva al final. Después ese cliente se borra de la base, con aprobación previa. Como en producción solo se entra con Google, el test usa una sesión guardada a partir de un login manual.
 
 ## Para confirmar con el cliente
 

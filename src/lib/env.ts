@@ -73,6 +73,33 @@ export function fakeToday(): string | undefined {
   );
 }
 
+/** The app's only user: in production, the Google account allowed in. */
+export function allowedEmail(): string {
+  const trimmed = z.preprocess(
+    (v) => (typeof v === "string" ? v.trim() : v),
+    z.email(),
+  );
+  return read("ADMIN_EMAIL", trimmed).toLowerCase();
+}
+
+/** Google OAuth client. Both values or neither; production requires them. */
+export function googleCredentials():
+  { clientId: string; clientSecret: string } | undefined {
+  const clientId = read("GOOGLE_CLIENT_ID", optional(z.string().min(1)));
+  const clientSecret = read(
+    "GOOGLE_CLIENT_SECRET",
+    optional(z.string().min(1)),
+  );
+  if (!clientId && !clientSecret) return undefined;
+  if (!clientId || !clientSecret) {
+    throw new Error(
+      "Set both GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, or neither.",
+    );
+  }
+  return { clientId, clientSecret };
+}
+
+/** Email and password of the development user (seed and local tests). */
 export function adminCredentials(): { email: string; password: string } {
   return {
     email: read("ADMIN_EMAIL", z.email()),
