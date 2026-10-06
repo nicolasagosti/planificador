@@ -21,6 +21,11 @@ const runAddress = `198.51.100.${1 + Math.floor(Math.random() * 254)}`;
 
 export default defineConfig({
   testDir: "./e2e",
+  globalSetup: "./e2e/seed.ts",
+  globalTeardown: "./e2e/seed.ts",
+  // Every page reads the database, which can be far from the machine
+  // running the tests.
+  expect: { timeout: 10_000 },
   workers: 1,
   reporter: "list",
   use: {
@@ -30,7 +35,14 @@ export default defineConfig({
     extraHTTPHeaders: { "x-forwarded-for": runAddress },
     trace: "retain-on-failure",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    { name: "setup", testMatch: /auth\.setup\.ts/ },
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+      dependencies: ["setup"],
+    },
+  ],
   webServer: process.env.E2E_BASE_URL
     ? undefined
     : {

@@ -59,6 +59,9 @@
   --radius-grid: 10px;
 
   --container-page: 1296px;
+  --container-headline: 1020px;
+  --container-summary: 900px;
+  --container-line: 760px;
 }
 
 @theme inline {

@@ -1,9 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
-
-const email = process.env.ADMIN_EMAIL ?? "";
-const password = process.env.ADMIN_PASSWORD ?? "";
-// Production has no email-and-password login: those tests run locally only.
-const againstDeployedApp = Boolean(process.env.E2E_BASE_URL);
+import {
+  againstDeployedApp,
+  email,
+  fillPasswordLogin,
+  formAlert,
+  password,
+} from "./helpers";
 
 // Any script or style blocked by the Content Security Policy shows up here.
 function collectCspErrors(page: Page): string[] {
@@ -18,15 +20,6 @@ function collectCspErrors(page: Page): string[] {
   });
   return errors;
 }
-
-async function signIn(page: Page, withPassword: string) {
-  await page.getByLabel("Email", { exact: true }).fill(email);
-  await page.getByLabel("Contraseña", { exact: true }).fill(withPassword);
-  await page.getByRole("button", { name: "Entrar", exact: true }).click();
-}
-
-// Scoped to main: Next.js adds its own role="alert" route announcer.
-const formAlert = (page: Page) => page.getByRole("main").getByRole("alert");
 
 test.describe("con contraseña (solo local)", () => {
   test.skip(againstDeployedApp, "production signs in with Google only");
@@ -45,13 +38,13 @@ test.describe("con contraseña (solo local)", () => {
       page.getByRole("heading", { name: "Entrá con tu cuenta" }),
     ).toBeVisible();
 
-    await signIn(page, `${password}-incorrecta`);
+    await fillPasswordLogin(page, `${password}-incorrecta`);
     await expect(formAlert(page)).toHaveText(
       "El email o la contraseña no son correctos.",
     );
     await expect(page).toHaveURL(/\/login$/);
 
-    await signIn(page, password);
+    await fillPasswordLogin(page, password);
     await expect(page.getByRole("button", { name: "Salir" })).toBeVisible();
     await expect(page).toHaveURL(/\/$/);
 
@@ -66,22 +59,32 @@ test.describe("con contraseña (solo local)", () => {
   test("después de entrar vuelve a la página pedida", async ({ page }) => {
     await page.goto("/?mes=2026-11");
     await expect(page).toHaveURL(/\/login\?next=%2F%3Fmes%3D2026-11$/);
-    await signIn(page, password);
+    await fillPasswordLogin(page, password);
     await expect(page).toHaveURL(/\/\?mes=2026-11$/);
   });
 
-  test("frena los intentos de más", async ({ page }) => {
-    await page.goto("/login");
-    const tooMany =
-      "Hiciste demasiados intentos. Esperá un minuto y probá de nuevo.";
-    for (let attempt = 0; attempt < 6; attempt++) {
-      await signIn(page, `${password}-incorrecta`);
-      await expect(
-        page.getByRole("button", { name: "Entrar", exact: true }),
-      ).toBeEnabled();
-      if ((await formAlert(page).textContent()) === tooMany) break;
-    }
-    await expect(formAlert(page)).toHaveText(tooMany);
+  test.describe("límite de intentos", () => {
+    // Its own made-up address (TEST-NET-3): locking it out must not block the
+    // sign-ins of the other tests, which share the run's address.
+    test.use({
+      extraHTTPHeaders: {
+        "x-forwarded-for": `203.0.113.${1 + Math.floor(Math.random() * 254)}`,
+      },
+    });
+
+    test("frena los intentos de más", async ({ page }) => {
+      await page.goto("/login");
+      const tooMany =
+        "Hiciste demasiados intentos. Esperá un minuto y probá de nuevo.";
+      for (let attempt = 0; attempt < 6; attempt++) {
+        await fillPasswordLogin(page, `${password}-incorrecta`);
+        await expect(
+          page.getByRole("button", { name: "Entrar", exact: true }),
+        ).toBeEnabled();
+        if ((await formAlert(page).textContent()) === tooMany) break;
+      }
+      await expect(formAlert(page)).toHaveText(tooMany);
+    });
   });
 });
 

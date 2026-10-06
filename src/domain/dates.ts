@@ -8,7 +8,7 @@ import type { CalendarDay } from "./today";
 /** A month: "YYYY-MM". */
 export type MonthKey = string;
 
-const MONTHS = [
+export const MONTHS = [
   "enero",
   "febrero",
   "marzo",

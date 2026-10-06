@@ -30,6 +30,23 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 - El 12 de octubre no dice "feriado".
 - Los textos que la especificación no fija se proponen en la fase de cada pantalla y se anotan acá cuando se aprueban.
 
+### Clientes (fase 4)
+
+- **La tabla** es una grilla con roles ARIA de tabla (`table`, `row`, `cell`), para respetar las columnas exactas del mockup. Toda la fila es clickeable porque el link del nombre se estira sobre ella; así la fila sin calendario puede llevar su propio link.
+- **Los filtros** filtran en el navegador, sin volver al servidor.
+- **Alta y edición de clientes** en un diálogo (`<dialog>` nativo), porque la especificación no tiene rutas para eso.
+  - Campos: "Nombre", "Rubro", "Contacto", "WhatsApp", "Redes que le manejás", "Cómo aprueba", "Notas" y "Cliente desde". Este último es un mes y un año en dos desplegables, porque `input type="month"` no anda en todos los navegadores.
+  - Botones "Crear cliente" y "Guardar cambios" ("Guardando…" mientras espera), y "Cancelar".
+- **Después de crear un cliente** se va a su pantalla, donde se arma su primer calendario.
+- **El link "Crear calendario de octubre"** de las filas sin calendario llega en la fase 7, junto con la creación de calendarios.
+- **Mientras llega la fase 5**, la pantalla Cliente muestra solo el nombre, sus datos y "Editar datos", y la de archivados solo la lista.
+- **Textos propuestos:**
+  - Sin clientes: "Todavía no cargaste ningún cliente" y "Creá el primero y después armale el calendario del mes.", con el botón "Nuevo cliente".
+  - Filtro vacío: "Ningún cliente tiene piezas atrasadas.", "Ningún calendario está esperando aprobación." y "Ningún calendario está en borrador."
+  - Archivados: "No aparecen en Clientes y sus piezas no cuentan. Sus calendarios siguen guardados." y, vacío, "No tenés clientes archivados."
+  - Datos vacíos del cliente: una raya ("—").
+- **Contraste con los PNG:** las capturas se comparan con Chromium sin hinting de fuentes (`--font-render-hinting=none`), que es como se renderizaron los mockups. Así la pantalla Clientes coincide con `01-clientes.png` en todos los píxeles salvo 35 (0,002 %): la flecha de la fila con el mouse encima. Con el renderizado por defecto de Linux, el texto chico sale entre 3 y 4 % más ancho.
+
 ### Textos propuestos (fase 3, a confirmar al ver cada pantalla)
 
 Están en `src/domain/phrases.ts` y tienen tests. Los de la especificación salen tal cual; estos son los que no fijaba.

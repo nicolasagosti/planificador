@@ -124,6 +124,14 @@ export const CLIENT_FILTER_LABELS: Record<ClientFilter, string> = {
   draft: "En borrador",
 };
 
+/** What the table says when a filter leaves no client. */
+export const CLIENT_FILTER_EMPTY: Record<ClientFilter, string> = {
+  all: "No hay clientes.",
+  overdue: "Ningún cliente tiene piezas atrasadas.",
+  awaiting: "Ningún calendario está esperando aprobación.",
+  draft: "Ningún calendario está en borrador.",
+};
+
 export function matchesFilter(
   client: ClientOverview,
   filter: ClientFilter,

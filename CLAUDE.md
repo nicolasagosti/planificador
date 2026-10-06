@@ -50,6 +50,6 @@ App web privada para que un community manager lleve los calendarios de contenido
 - `npm run db:generate -- --name <nombre>`: genera una migración SQL en `src/db/migrations` a partir de `src/db/schema.ts`. Revisá el SQL antes de aplicarlo.
 - `npm run db:migrate`: aplica las migraciones pendientes en la base de `DATABASE_URL`.
 - `npm run db:seed`: carga los datos de la sección 10 para el usuario de `ADMIN_EMAIL` y reemplaza lo que tuviera. Se niega a correr en producción o si la base tiene otro usuario.
-- `npm run test:e2e`: tests de Playwright contra un build de producción local en el puerto 3100. Entran con email y contraseña (el usuario de `.env.local`), que solo existe fuera de producción. Con `E2E_BASE_URL` corren contra la app publicada y se saltean los de contraseña.
+- `npm run test:e2e`: tests de Playwright contra un build de producción local en el puerto 3100. Recargan el seed antes y después de correr, así que borran lo que hayas cargado a mano en la base de desarrollo. Entran una vez con email y contraseña (el usuario de `.env.local`, que solo existe fuera de producción) y guardan la sesión en `playwright/.auth/`. Con `E2E_BASE_URL` corren contra la app publicada y se saltean los que usan contraseña.
 
 Las variables de entorno están documentadas en `.env.example`. En desarrollo van en `.env.local`.
