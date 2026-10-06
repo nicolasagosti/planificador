@@ -7,23 +7,33 @@ const KIND: Record<SquareKind, string> = {
   pending: "bg-pending shadow-[inset_0_0_0_1.5px_var(--color-pending-edge)]",
   done: "bg-done",
   delivered: "bg-delivered",
-  overdue: "rotate-45 scale-80 bg-overdue",
+  overdue: "rotate-45 bg-overdue",
   sent: "shadow-[inset_0_0_0_1.5px_var(--color-hollow)]",
   draft: "border-[1.5px] border-dashed border-hollow",
 };
 
-/** One piece. The size comes from `className` (13px in tables). */
+/**
+ * One piece. Size and radius come from `className` (13px in tables); the
+ * overdue diamond is scaled down so it fits the same box.
+ */
 export function Square({
   kind,
   className = "size-[13px] rounded-square",
+  overdueScale = "scale-80",
 }: {
   kind: SquareKind;
   className?: string;
+  overdueScale?: string;
 }) {
   return (
     <span
       aria-hidden="true"
-      className={cx("inline-block shrink-0", KIND[kind], className)}
+      className={cx(
+        "inline-block shrink-0",
+        KIND[kind],
+        kind === "overdue" && overdueScale,
+        className,
+      )}
     />
   );
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNotNull, isNull, sql } from "drizzle-orm";
 import type { Route } from "next";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -112,4 +112,45 @@ export async function updateClient(
   revalidatePath("/");
   revalidatePath(`/clientes/${id.data}`);
   return { status: "saved" };
+}
+
+function revalidateClient(clientId: string) {
+  revalidatePath("/");
+  revalidatePath("/clientes/archivados");
+  revalidatePath(`/clientes/${clientId}`);
+}
+
+/** Archiving deletes nothing: the client leaves the list and stops counting. */
+export async function archiveClient(clientId: string): Promise<void> {
+  const user = await requireUser();
+  const id = idSchema.safeParse(clientId);
+  if (!id.success) return;
+  await getDb()
+    .update(clients)
+    .set({ archivedAt: sql`now()` })
+    .where(
+      and(
+        eq(clients.id, id.data),
+        eq(clients.userId, user.id),
+        isNull(clients.archivedAt),
+      ),
+    );
+  revalidateClient(id.data);
+}
+
+export async function unarchiveClient(clientId: string): Promise<void> {
+  const user = await requireUser();
+  const id = idSchema.safeParse(clientId);
+  if (!id.success) return;
+  await getDb()
+    .update(clients)
+    .set({ archivedAt: null })
+    .where(
+      and(
+        eq(clients.id, id.data),
+        eq(clients.userId, user.id),
+        isNotNull(clients.archivedAt),
+      ),
+    );
+  revalidateClient(id.data);
 }

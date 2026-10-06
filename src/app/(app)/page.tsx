@@ -117,6 +117,7 @@ export default async function ClientsPage({ searchParams }: PageProps<"/">) {
           <ClientsTable
             rows={rows}
             counts={filterCounts(clients, day)}
+            month={month}
             monthName={name}
             monthTitleName={`${name.charAt(0).toUpperCase()}${name.slice(1)}`}
             newClient={newClient}

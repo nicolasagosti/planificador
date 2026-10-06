@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { OverviewCalendar } from "./month-overview";
 import type { PieceState } from "./pieces";
 import {
+  archivedNotice,
   assetLink,
   calendarCell,
   calendarHeadline,
@@ -19,12 +20,14 @@ import {
   monthOverdueLine,
   nextDeliveryCell,
   notCountingNote,
+  openCalendarLabel,
   pieceAriaLabel,
   pieceStateLabel,
   pieceSteps,
   plainText,
   squaresDescription,
   todayLine,
+  upcomingTitle,
 } from "./phrases";
 
 const TODAY = "2026-10-05";
@@ -424,6 +427,18 @@ describe("Cliente", () => {
         TODAY,
       ),
     ).toBe("Enviado el 1 oct, sin respuesta");
+  });
+
+  it("says when a client is archived", () => {
+    expect(archivedNotice("2026-10-06")).toEqual({
+      lead: "Archivado el 6 oct.",
+      rest: "No aparece en Clientes y sus piezas no cuentan.",
+    });
+  });
+
+  it("titles what comes next", () => {
+    expect(upcomingTitle(OCTOBER)).toBe("Lo que sigue en octubre");
+    expect(openCalendarLabel(OCTOBER)).toBe("Abrir el calendario de octubre");
   });
 
   it("names the state of each upcoming piece", () => {

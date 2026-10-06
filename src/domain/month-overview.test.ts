@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { addMonths } from "./dates";
 import {
   filterCounts,
   matchesFilter,
   monthTotals,
+  newCalendarMonths,
   notCounting,
   overdueByClient,
   parseMonthParam,
@@ -235,6 +237,23 @@ describe("months", () => {
     expect(parseMonthParam("1999-12", "2026-10")).toBe("2026-10");
     expect(parseMonthParam(undefined, "2026-10")).toBe("2026-10");
     expect(parseMonthParam(["2026-11"], "2026-10")).toBe("2026-10");
+  });
+
+  it("offers two months back to a year ahead, without existing calendars", () => {
+    // Café Lumbre: August to November already have one.
+    const offered = newCalendarMonths(
+      ["2026-08", "2026-09", "2026-10", "2026-11"],
+      "2026-10",
+    );
+    // 15 months (August 2026 to October 2027) minus the 4 taken.
+    expect(offered).toHaveLength(11);
+    expect(offered[0]).toBe("2026-12");
+    expect(offered.at(-1)).toBe("2027-10");
+  });
+
+  it("always offers the proposed month", () => {
+    const taken = Array.from({ length: 15 }, (_, i) => addMonths("2026-08", i));
+    expect(newCalendarMonths(taken, "2026-10")).toEqual(["2027-11"]);
   });
 
   it("proposes the first month without a calendar, from the current one", () => {

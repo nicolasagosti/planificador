@@ -5,8 +5,6 @@ import {
   useActionState,
   useEffect,
   useId,
-  useRef,
-  useState,
   type FormEvent,
 } from "react";
 import type {
@@ -14,6 +12,14 @@ import type {
   ClientFormState,
 } from "@/app/(app)/clientes/actions";
 import { PlusIcon } from "@/components/icons";
+import {
+  linkButton,
+  primaryButton,
+  primaryIconButton,
+  secondaryButton,
+} from "@/components/ui/buttons";
+import { Dialog } from "@/components/ui/dialog";
+import { fieldClass } from "@/components/ui/fields";
 import { NETWORK_LABELS, NETWORKS } from "@/domain/catalog";
 import { MONTHS } from "@/domain/dates";
 
@@ -42,61 +48,26 @@ type Props = {
   currentYear: number;
 };
 
-const fieldClass =
-  "min-h-11 w-full rounded-button border border-hollow bg-surface px-3 text-15 text-ink focus-visible:border-ink aria-invalid:border-ink";
-
 /** "Nuevo cliente" or "Editar datos": a button that opens the client form. */
 export function ClientFormDialog(props: Props) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  // Each opening mounts a fresh form, with the saved values and no old errors.
-  const [opening, setOpening] = useState(0);
-  const titleId = useId();
-
-  useEffect(() => {
-    if (opening > 0) dialogRef.current?.showModal();
-  }, [opening]);
-
-  const close = () => dialogRef.current?.close();
-
+  const create = props.mode === "create";
   return (
-    <>
-      {props.mode === "create" ? (
-        <button
-          type="button"
-          onClick={() => setOpening((n) => n + 1)}
-          className="flex min-h-11 cursor-pointer items-center gap-2 rounded-button bg-ink pr-4.5 pl-3.5 font-semibold text-surface hover:bg-ink-hover"
-        >
-          <PlusIcon />
-          <span>Nuevo cliente</span>
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setOpening((n) => n + 1)}
-          className="min-h-11 cursor-pointer rounded-button border-[1.5px] border-ink bg-surface px-4 font-semibold hover:bg-row-hover"
-        >
-          Editar datos
-        </button>
-      )}
-      <dialog
-        ref={dialogRef}
-        aria-labelledby={titleId}
-        // A click on the backdrop lands on the dialog itself: close.
-        onClick={(event) => {
-          if (event.target === event.currentTarget) close();
-        }}
-        className="m-auto max-h-[calc(100dvh-2rem)] overflow-y-auto w-[min(36rem,calc(100vw-2rem))] rounded-button border-[1.5px] border-ink bg-surface p-0 text-ink backdrop:bg-ink/40"
-      >
-        {opening > 0 && (
-          <ClientForm
-            key={opening}
-            {...props}
-            titleId={titleId}
-            onClose={close}
-          />
-        )}
-      </dialog>
-    </>
+    <Dialog
+      title={create ? "Nuevo cliente" : "Editar datos"}
+      triggerClassName={create ? primaryIconButton : secondaryButton}
+      trigger={
+        create ? (
+          <>
+            <PlusIcon />
+            <span>Nuevo cliente</span>
+          </>
+        ) : (
+          "Editar datos"
+        )
+      }
+    >
+      {(close) => <ClientForm {...props} onClose={close} />}
+    </Dialog>
   );
 }
 
@@ -105,9 +76,8 @@ function ClientForm({
   action,
   initial,
   currentYear,
-  titleId,
   onClose,
-}: Props & { titleId: string; onClose: () => void }) {
+}: Props & { onClose: () => void }) {
   const [state, formAction, pending] = useActionState(action, {
     status: "idle",
   });
@@ -131,18 +101,7 @@ function ClientForm({
   const years = Array.from({ length: 31 }, (_, index) => currentYear - index);
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      noValidate
-      className="flex flex-col gap-5 p-6"
-    >
-      <h2
-        id={titleId}
-        className="text-22 font-bold font-stretch-108% tracking-[-0.01em]"
-      >
-        {mode === "create" ? "Nuevo cliente" : "Editar datos"}
-      </h2>
-
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
       {state.status === "failed" && (
         <p
           role="alert"
@@ -267,15 +226,11 @@ function ClientForm({
         <button
           type="button"
           onClick={onClose}
-          className="min-h-11 cursor-pointer px-1 font-semibold underline underline-offset-3"
+          className={`${linkButton} px-1`}
         >
           Cancelar
         </button>
-        <button
-          type="submit"
-          disabled={pending}
-          className="min-h-11 cursor-pointer rounded-button bg-ink px-4.5 font-semibold text-surface hover:bg-ink-hover disabled:cursor-wait disabled:bg-ink-hover"
-        >
+        <button type="submit" disabled={pending} className={primaryButton}>
           {pending
             ? "Guardando…"
             : mode === "create"

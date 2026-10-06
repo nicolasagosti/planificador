@@ -38,14 +38,28 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
   - Campos: "Nombre", "Rubro", "Contacto", "WhatsApp", "Redes que le manejás", "Cómo aprueba", "Notas" y "Cliente desde". Este último es un mes y un año en dos desplegables, porque `input type="month"` no anda en todos los navegadores.
   - Botones "Crear cliente" y "Guardar cambios" ("Guardando…" mientras espera), y "Cancelar".
 - **Después de crear un cliente** se va a su pantalla, donde se arma su primer calendario.
-- **El link "Crear calendario de octubre"** de las filas sin calendario llega en la fase 7, junto con la creación de calendarios.
-- **Mientras llega la fase 5**, la pantalla Cliente muestra solo el nombre, sus datos y "Editar datos", y la de archivados solo la lista.
+- **"Crear calendario de octubre"**, en las filas sin calendario, es un botón con aspecto de link, porque crea algo: arma el calendario del mes que se está mirando y lo abre. Llegó en la fase 5.
 - **Textos propuestos:**
   - Sin clientes: "Todavía no cargaste ningún cliente" y "Creá el primero y después armale el calendario del mes.", con el botón "Nuevo cliente".
   - Filtro vacío: "Ningún cliente tiene piezas atrasadas.", "Ningún calendario está esperando aprobación." y "Ningún calendario está en borrador."
   - Archivados: "No aparecen en Clientes y sus piezas no cuentan. Sus calendarios siguen guardados." y, vacío, "No tenés clientes archivados."
   - Datos vacíos del cliente: una raya ("—").
 - **Contraste con los PNG:** las capturas se comparan con Chromium sin hinting de fuentes (`--font-render-hinting=none`), que es como se renderizaron los mockups. Así la pantalla Clientes coincide con `01-clientes.png` en todos los píxeles salvo 35 (0,002 %): la flecha de la fila con el mouse encima. Con el renderizado por defecto de Linux, el texto chico sale entre 3 y 4 % más ancho.
+
+### Cliente (fase 5)
+
+- **Crear calendarios se adelantó a esta fase.** La especificación lo pone en la fase 7, pero "Nuevo calendario", la frase de un mes sin calendario y la fila de Clientes lo necesitan. Crear un calendario lo deja en borrador y vacío, y abre su página. Si el mes ya tenía calendario, solo lo abre. Cargar piezas y las transiciones siguen en la fase 7.
+- **"Nuevo calendario"** abre un diálogo con un desplegable "Mes". Propone el primer mes sin calendario a partir del actual y ofrece desde dos meses atrás hasta un año adelante, sin los que ya tienen calendario. Botones "Crear calendario" ("Creando…" mientras espera) y "Cancelar".
+- **La página del calendario, por ahora,** tiene la ruta de navegación, el mes con sus flechas, la línea de estado y, si está aprobado, la frase con los números y los cuadraditos. Sin calendario: "Todavía no hay calendario de diciembre para Café Lumbre." y "Crear calendario". La grilla y el panel llegan en la fase 6.
+- **Mes enviado:** hasta que la fase 7 traiga "Marcar como aprobado", la frase ofrece "Abrir el calendario de octubre".
+- **Cliente archivado:**
+  - La frase del mes se reemplaza por "Archivado el 6 oct. No aparece en Clientes y sus piezas no cuentan." y el botón "Desarchivar".
+  - No muestra "Lo que sigue", "Nuevo calendario" ni "Archivar cliente", y el servidor no le crea calendarios: para armarle uno, primero se lo desarchiva.
+  - Sus calendarios se siguen viendo y "Editar datos" sigue disponible.
+- **Archivar y desarchivar no piden confirmación:** no borran nada y se deshacen con un clic. También se desarchiva desde "Clientes archivados".
+- **La fecha de archivado** es el día real en que se archivó, con la hora de la base. En desarrollo, con `APP_FAKE_TODAY`, puede no coincidir con "Hoy es…".
+- **Texto propuesto:** sin calendarios, "Todavía no armaste calendarios para este cliente."
+- **Contraste con los PNG:** con el mismo método que en Clientes, la pantalla coincide con `02-cliente.png` y con `02-cliente-movil.png` en todos los píxeles.
 
 ### Textos propuestos (fase 3, a confirmar al ver cada pantalla)
 
@@ -119,6 +133,7 @@ Están en `src/domain/phrases.ts` y tienen tests. Los de la especificación sale
 - **Driver de base: `pg` (node-postgres) por TCP**, no `@neondatabase/serverless`. Es lo que Neon recomienda hoy para Vercel con Fluid compute: un pool por instancia, con `attachDatabasePool` de `@vercel/functions` para cerrar las conexiones inactivas antes de que la función se suspenda. Soporta transacciones. El driver de Neon queda para entornos sin proceso persistente.
 - **Deploy:** funciones en São Paulo (`gru1`), en la misma región que la base. Las migraciones se aplican en el build, solo en el deploy de producción y por la conexión directa.
 - **Un commit por fase**, en `main`.
+- **Tests de navegador y la base.** Comparten la base durante toda la corrida; el seed se recarga al empezar y al terminar. Por eso un test que crea un cliente lo deja archivado al final, salvo el último de la corrida, y así los de Clientes cuentan solo los clientes del seed.
 - **Test de punta a punta en producción.** Corre una vez, antes de que el community manager empiece a usar la app, con un cliente "Prueba E2E" que el test archiva al final. Después ese cliente se borra de la base, con aprobación previa. Como en producción solo se entra con Google, el test usa una sesión guardada a partir de un login manual.
 
 ## Para confirmar con el cliente

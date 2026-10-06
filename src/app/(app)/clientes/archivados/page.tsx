@@ -1,15 +1,16 @@
 import type { Metadata, Route } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { linkButton } from "@/components/ui/buttons";
 import { listArchivedClients } from "@/db/queries/clients";
 import { shortDate } from "@/domain/dates";
 import { requireUser } from "@/server/session";
+import { unarchiveClient } from "../actions";
 
 export const metadata: Metadata = {
   title: "Clientes archivados · Planificador",
 };
 
-// Unarchiving comes with the Cliente screen.
 export default async function ArchivedClientsPage() {
   await requireUser();
   const clients = await listArchivedClients();
@@ -36,23 +37,34 @@ export default async function ArchivedClientsPage() {
           {clients.map((client) => (
             <li
               key={client.id}
-              className="relative border-b border-line px-3 py-4 hover:bg-row-hover"
+              className="relative flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-b border-line px-3 py-4 hover:bg-row-hover"
             >
-              <Link
-                href={`/clientes/${client.id}` as Route}
-                className="text-17 font-bold font-stretch-105% text-ink no-underline after:absolute after:inset-0"
-              >
-                {client.name}
-              </Link>
-              <div className="text-13 text-muted">
-                {[
-                  client.industry,
-                  client.archivedOn &&
-                    `Archivado el ${shortDate(client.archivedOn)}`,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
+              <div>
+                {/* The name's link covers the row; the button sits above it. */}
+                <Link
+                  href={`/clientes/${client.id}` as Route}
+                  className="text-17 font-bold font-stretch-105% text-ink no-underline after:absolute after:inset-0"
+                >
+                  {client.name}
+                </Link>
+                <div className="text-13 text-muted">
+                  {[
+                    client.industry,
+                    client.archivedOn &&
+                      `Archivado el ${shortDate(client.archivedOn)}`,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </div>
               </div>
+              <form
+                action={unarchiveClient.bind(null, client.id)}
+                className="relative z-10"
+              >
+                <button type="submit" className={linkButton}>
+                  Desarchivar
+                </button>
+              </form>
             </li>
           ))}
         </ul>

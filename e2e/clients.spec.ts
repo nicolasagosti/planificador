@@ -113,4 +113,11 @@ test("crear y editar un cliente", async ({ page }) => {
   await page.getByRole("link", { name: "Clientes" }).click();
   const row = page.getByRole("row").filter({ hasText: "Prueba E2E" });
   await expect(row).toContainText("Sin calendario");
+  await row
+    .getByRole("button", { name: "Crear calendario de octubre" })
+    .click();
+  await expect(page).toHaveURL(/\/calendarios\/2026-10$/);
+  await expect(page.getByRole("main")).toContainText(
+    "Borrador: todavía no se lo mandaste.",
+  );
 });

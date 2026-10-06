@@ -212,11 +212,16 @@ export function notCounting(clients: readonly ClientOverview[]): NotCounting {
 // ---------------------------------------------------------------------------
 // Months
 
+/** A "YYYY-MM" month within the years the app works with. */
+export function isSupportedMonth(value: unknown): value is MonthKey {
+  if (typeof value !== "string" || !isMonthKey(value)) return false;
+  const year = Number(value.slice(0, 4));
+  return year >= 2000 && year <= 2100;
+}
+
 /** The month of `?mes=YYYY-MM`, or the fallback when it is not valid. */
 export function parseMonthParam(value: unknown, fallback: MonthKey): MonthKey {
-  if (typeof value !== "string" || !isMonthKey(value)) return fallback;
-  const year = Number(value.slice(0, 4));
-  return year >= 2000 && year <= 2100 ? value : fallback;
+  return isSupportedMonth(value) ? value : fallback;
 }
 
 /** "Nuevo calendario" proposes the first month without one, from this one. */
@@ -227,4 +232,23 @@ export function proposedNewMonth(
   let month = currentMonth;
   while (existing.includes(month)) month = addMonths(month, 1);
   return month;
+}
+
+/**
+ * The months "Nuevo calendario" offers: from two months back to a year ahead,
+ * without the ones that already have a calendar. The proposed month is
+ * always among them.
+ */
+export function newCalendarMonths(
+  existing: readonly MonthKey[],
+  currentMonth: MonthKey,
+): MonthKey[] {
+  const months: MonthKey[] = [];
+  for (let offset = -2; offset <= 12; offset++) {
+    const month = addMonths(currentMonth, offset);
+    if (!existing.includes(month)) months.push(month);
+  }
+  const proposed = proposedNewMonth(existing, currentMonth);
+  if (!months.includes(proposed)) months.push(proposed);
+  return months;
 }

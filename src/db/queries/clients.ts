@@ -1,8 +1,10 @@
 import "server-only";
 import { and, asc, desc, eq, inArray, isNotNull, isNull } from "drizzle-orm";
+import { notFound } from "next/navigation";
 import { firstDayOf, type MonthKey } from "@/domain/dates";
 import type { ClientOverview } from "@/domain/month-overview";
 import type { PieceState } from "@/domain/pieces";
+import { idSchema } from "@/domain/schemas";
 import { calendarDayIn, type CalendarDay } from "@/domain/today";
 import { appTimeZone } from "@/lib/env";
 import { getDb } from "@/server/db";
@@ -128,6 +130,17 @@ export async function getClient(
   if (!client) return null;
   const { archivedAt, ...details } = client;
   return { ...details, archivedOn: dayOf(archivedAt) };
+}
+
+/** The client of the signed-in user with this id, or the 404 page. */
+export async function findClientOr404(
+  clientId: string,
+): Promise<ClientDetails> {
+  const id = idSchema.safeParse(clientId);
+  if (!id.success) notFound();
+  const client = await getClient(id.data);
+  if (!client) notFound();
+  return client;
 }
 
 /** Archived clients, the most recently archived first. */

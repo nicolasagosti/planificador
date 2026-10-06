@@ -367,6 +367,24 @@ export function calendarRowStatus(
   }
 }
 
+/** Cliente, archived: replaces the sentence of the month. */
+export function archivedNotice(archivedOn: CalendarDay | null): Emphasis {
+  return {
+    lead: archivedOn ? `Archivado el ${shortDate(archivedOn)}.` : "Archivado.",
+    rest: "No aparece en Clientes y sus piezas no cuentan.",
+  };
+}
+
+/** "Lo que sigue en octubre" */
+export function upcomingTitle(month: MonthKey): string {
+  return `Lo que sigue en ${monthName(month)}`;
+}
+
+/** "Abrir el calendario de octubre" */
+export function openCalendarLabel(month: MonthKey): string {
+  return `Abrir el calendario de ${monthName(month)}`;
+}
+
 /** Cliente, "Lo que sigue": the state of a piece in words. */
 export function pieceStateLabel(
   piece: PieceState,

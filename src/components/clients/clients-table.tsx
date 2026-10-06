@@ -3,16 +3,24 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
+import { useFormStatus } from "react-dom";
+import { createCalendar } from "@/app/(app)/clientes/[clientId]/calendarios/actions";
 import { ChevronRightIcon } from "@/components/icons";
 import { CalendarStatusIcon } from "@/components/status/calendar-status-icon";
-import { Square, SquareRow } from "@/components/status/square";
+import { NumberCell, NumberHeader } from "@/components/status/count-cells";
+import { SquareRow } from "@/components/status/square";
+import type { MonthKey } from "@/domain/dates";
 import {
   CLIENT_FILTER_EMPTY,
   CLIENT_FILTER_LABELS,
   CLIENT_FILTERS,
   type ClientFilter,
 } from "@/domain/month-overview";
-import type { CalendarCell, NextDelivery } from "@/domain/phrases";
+import {
+  createCalendarLabel,
+  type CalendarCell,
+  type NextDelivery,
+} from "@/domain/phrases";
 import type { Square as SquareKind } from "@/domain/pieces";
 import { cx } from "@/lib/cx";
 
@@ -37,12 +45,14 @@ const columns =
 export function ClientsTable({
   rows,
   counts,
+  month,
   monthName,
   monthTitleName,
   newClient,
 }: {
   rows: ClientRow[];
   counts: Record<ClientFilter, number>;
+  month: MonthKey;
   /** "octubre" */
   monthName: string;
   /** "Octubre" */
@@ -108,7 +118,7 @@ export function ClientsTable({
           </div>
           <div role="rowgroup">
             {visible.map((row) => (
-              <ClientRowView key={row.id} row={row} />
+              <ClientRowView key={row.id} row={row} month={month} />
             ))}
             {visible.length === 0 && (
               <div
@@ -125,22 +135,7 @@ export function ClientsTable({
   );
 }
 
-function NumberHeader({
-  kind,
-  children,
-}: {
-  kind: SquareKind;
-  children: string;
-}) {
-  return (
-    <div role="columnheader" className="flex items-center justify-end gap-1.5">
-      <Square kind={kind} className="size-2.5 rounded-square-sm" />
-      <span>{children}</span>
-    </div>
-  );
-}
-
-function ClientRowView({ row }: { row: ClientRow }) {
+function ClientRowView({ row, month }: { row: ClientRow; month: MonthKey }) {
   return (
     <div
       role="row"
@@ -170,8 +165,23 @@ function ClientRowView({ row }: { row: ClientRow }) {
           )}
           <span>{row.cell.label}</span>
         </div>
-        {row.cell.detail && (
-          <div className="pl-[23px] text-13 text-muted">{row.cell.detail}</div>
+        {row.cell.status === "none" ? (
+          // Above the name's link that covers the row.
+          <form
+            action={createCalendar.bind(null, row.id)}
+            className="relative z-10"
+          >
+            <input type="hidden" name="month" value={month} />
+            <CreateCalendarButton>
+              {createCalendarLabel(month)}
+            </CreateCalendarButton>
+          </form>
+        ) : (
+          row.cell.detail && (
+            <div className="pl-[23px] text-13 text-muted">
+              {row.cell.detail}
+            </div>
+          )
         )}
       </div>
 
@@ -192,25 +202,17 @@ function ClientRowView({ row }: { row: ClientRow }) {
   );
 }
 
-function NumberCell({ value }: { value: number | null }) {
-  if (value === null) {
-    return (
-      <div role="cell" className="text-right text-22 font-medium text-muted">
-        <span aria-hidden="true">–</span>
-        <span className="sr-only">No cuenta todavía</span>
-      </div>
-    );
-  }
+/** Creates the month's calendar and opens it. 44px high, one line tall. */
+function CreateCalendarButton({ children }: { children: string }) {
+  const { pending } = useFormStatus();
   return (
-    <div
-      role="cell"
-      className={cx(
-        "text-right text-22 tabular-nums",
-        value === 0 ? "font-medium text-muted" : "font-bold",
-      )}
+    <button
+      type="submit"
+      disabled={pending}
+      className="-my-3 inline-flex min-h-11 cursor-pointer items-center text-13 font-semibold text-ink underline underline-offset-2 disabled:cursor-wait"
     >
-      {value}
-    </div>
+      {pending ? "Creando…" : children}
+    </button>
   );
 }
 
