@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
-  allowedEmail,
   authUrl,
   fakeToday,
   googleCredentials,
@@ -10,13 +9,6 @@ import {
 
 afterEach(() => {
   vi.unstubAllEnvs();
-});
-
-describe("allowedEmail", () => {
-  it("is ADMIN_EMAIL, normalized", () => {
-    vi.stubEnv("ADMIN_EMAIL", " Ana@Example.com ");
-    expect(allowedEmail()).toBe("ana@example.com");
-  });
 });
 
 describe("googleCredentials", () => {

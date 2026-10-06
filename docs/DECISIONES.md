@@ -101,7 +101,6 @@ Están en `src/domain/phrases.ts` y tienen tests. Los de la especificación sale
 - El botón usa el estilo de la app y no el logo de colores de Google, para respetar que el color significa estado. Las pautas de marca de Google solo se exigen si la app de OAuth se publica y verifica.
 - Fuera de producción, debajo y con el título "Con contraseña, solo en desarrollo": campos "Email" y "Contraseña" y botón "Entrar" ("Entrando…" mientras espera).
 - Errores, en un recuadro con borde de tinta y sin rojo, porque el rojo significa "atrasada":
-  - "Esa cuenta de Google no tiene acceso al Planificador."
   - "No se completó el ingreso con Google."
   - "No pudimos entrar con Google. Probá de nuevo."
   - "El email o la contraseña no son correctos."
@@ -113,8 +112,13 @@ Están en `src/domain/phrases.ts` y tienen tests. Los de la especificación sale
 
 - **Login con Google** (decidido el 6 de octubre de 2026, en lugar del email y la contraseña de la sección 7 de la especificación):
   - En producción es la única forma de entrar.
-  - Solo puede entrar la cuenta de Google de `ADMIN_EMAIL`, y su primer ingreso crea el usuario. Better Auth no deja crear otro usuario ni abrir sesión con otra cuenta, y una sesión de otra cuenta cuenta como ninguna.
   - El script `user:create` se eliminó.
+- **Puede entrar cualquier cuenta de Google** (decidido el 6 de octubre de 2026). Cambia lo que la especificación ponía en "Login de un único usuario" y en "No construir: varios usuarios":
+  - El primer ingreso de una cuenta crea su usuario, que arranca sin clientes.
+  - Cada cuenta ve y cambia solo sus propios clientes, calendarios y piezas: todas las consultas y Server Actions filtran por el usuario de la sesión, como pedía la especificación desde el principio.
+  - Sigue sin haber roles, datos compartidos entre cuentas ni acceso de los clientes.
+  - Cualquiera que tenga el link puede crearse una cuenta.
+  - `ADMIN_EMAIL` quedó solo para el usuario de desarrollo.
   - El email y la contraseña quedan solo fuera de producción, para desarrollo y para los tests de navegador, porque el login de Google no se puede automatizar.
 - **Límite de intentos:** 5 logins con contraseña por minuto por IP, guardados en Postgres. En memoria no serviría en Vercel, porque cada instancia contaría aparte. El límite de Better Auth solo vale para los pedidos a `/api/auth`, así que el login entra por ahí y no por una Server Action.
 - **Verificación de la sesión:** el proxy solo mira que exista la cookie, para mandar rápido a `/login`. La sesión se verifica de verdad en cada página, Server Action, route handler y consulta (`requireUser()`).

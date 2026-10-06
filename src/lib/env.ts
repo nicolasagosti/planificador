@@ -73,15 +73,6 @@ export function fakeToday(): string | undefined {
   );
 }
 
-/** The app's only user: in production, the Google account allowed in. */
-export function allowedEmail(): string {
-  const trimmed = z.preprocess(
-    (v) => (typeof v === "string" ? v.trim() : v),
-    z.email(),
-  );
-  return read("ADMIN_EMAIL", trimmed).toLowerCase();
-}
-
 /** Google OAuth client. Both values or neither; production requires them. */
 export function googleCredentials():
   { clientId: string; clientSecret: string } | undefined {

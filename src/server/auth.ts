@@ -2,11 +2,8 @@ import "server-only";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { eq } from "drizzle-orm";
 import * as schema from "@/db/schema";
-import { isAllowedEmail } from "@/lib/access";
 import {
-  allowedEmail,
   authSecret,
   authUrl,
   googleCredentials,
@@ -22,7 +19,6 @@ function createAuth() {
       "Production signs in with Google: set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.",
     );
   }
-  const onlyUser = allowedEmail();
 
   return betterAuth({
     appName: "Planificador",
@@ -34,33 +30,14 @@ function createAuth() {
       usePlural: true,
     }),
     advanced: { database: { generateId: "uuid" } },
-    // The user signs in with Google. Email and password exist only outside
-    // production, for development and the end-to-end tests (Google's login
-    // cannot be automated).
+    // Any Google account can sign in: its first sign-in creates its user,
+    // and each user sees only their own clients. Email and password exist
+    // only outside production, for development and the end-to-end tests
+    // (Google's login cannot be automated), and sign-up there is closed.
     socialProviders: google
       ? { google: { ...google, prompt: "select_account" } }
       : {},
     emailAndPassword: { enabled: !production, disableSignUp: true },
-    // A single user: only the ADMIN_EMAIL account can be created (its first
-    // Google sign-in creates it) and only that account can open a session.
-    databaseHooks: {
-      user: {
-        create: {
-          before: async (user) => isAllowedEmail(user.email, onlyUser),
-        },
-      },
-      session: {
-        create: {
-          before: async (session) => {
-            const [owner] = await getDb()
-              .select({ email: schema.users.email })
-              .from(schema.users)
-              .where(eq(schema.users.id, session.userId));
-            return isAllowedEmail(owner?.email, onlyUser);
-          },
-        },
-      },
-    },
     // Sign-in attempts are limited per IP. The counters live in Postgres: in
     // memory, each Vercel instance would keep its own count. Only requests to
     // /api/auth are limited, so the login screen must go through it.

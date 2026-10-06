@@ -119,10 +119,12 @@ test.describe("con Google", () => {
     expect(cspErrors).toEqual([]);
   });
 
-  test("una cuenta sin acceso ve el aviso", async ({ page }) => {
-    await page.goto("/login?error=unable_to_create_user");
+  test("si el ingreso con Google no se completa, lo avisa", async ({
+    page,
+  }) => {
+    await page.goto("/login?error=access_denied");
     await expect(formAlert(page)).toHaveText(
-      "Esa cuenta de Google no tiene acceso al Planificador.",
+      "No se completó el ingreso con Google.",
     );
   });
 });
