@@ -47,9 +47,9 @@ App web privada para que un community manager lleve los calendarios de contenido
 - `npm run lint`: ESLint y el chequeo de formato de Prettier. `npm run format` corrige el formato.
 - `npm test`: tests de Vitest. `npm run test:watch` los corre en modo observación.
 - `npm run build`: build de producción.
-- `npm run db:generate`: genera una migración SQL a partir del esquema. Desde la fase 1.
-- `npm run db:migrate`: aplica las migraciones pendientes en la base de `DATABASE_URL`. Desde la fase 1.
-- `npm run db:seed`: carga los datos de ejemplo de la sección 10 en la base de desarrollo. Se niega a correr en producción. Desde la fase 1.
+- `npm run db:generate -- --name <nombre>`: genera una migración SQL en `src/db/migrations` a partir de `src/db/schema.ts`. Revisá el SQL antes de aplicarlo.
+- `npm run db:migrate`: aplica las migraciones pendientes en la base de `DATABASE_URL`.
+- `npm run db:seed`: carga los datos de la sección 10 para el usuario de `ADMIN_EMAIL` y reemplaza lo que tuviera. Se niega a correr en producción o si la base tiene otro usuario.
 - `npm run user:create`: crea el usuario con `ADMIN_EMAIL` y `ADMIN_PASSWORD`, o le cambia la contraseña si ya existe. Desde la fase 2.
 
 Las variables de entorno están documentadas en `.env.example`. En desarrollo van en `.env.local`.

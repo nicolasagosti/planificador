@@ -19,6 +19,8 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 - **Link de archivo.** Se edita en calendarios aprobados, con la pieza en cualquier estado. En borrador y enviado no se muestra.
 - **Eliminar un calendario reabierto.** Está permitido. La confirmación avisa que el cliente ya lo había aprobado y que se borra esa constancia.
 - **Producción** es `VERCEL_ENV=production`. Ahí se ignora `APP_FAKE_TODAY`. El seed se niega a correr con `VERCEL_ENV` o `NODE_ENV` en `production`, y también si la base tiene un usuario que no es el de desarrollo.
+- **Cambiar la contraseña** con el script de usuario cierra todas las sesiones abiertas.
+- **Momentos.** `updated_at`, y más adelante `done_at` y `delivered_at`, toman la hora de la base (`now()`), no la del servidor de la app.
 
 ## Pantallas
 
@@ -27,6 +29,12 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 - Un cliente archivado se abre desde "Clientes archivados" y muestra un aviso con "Desarchivar" en lugar de la frase del mes.
 - El 12 de octubre no dice "feriado".
 - Los textos que la especificación no fija se proponen en la fase de cada pantalla y se anotan acá cuando se aprueban.
+
+## Datos de ejemplo
+
+- Además de los temas, se inventaron los datos de contacto, las notas y el "cliente desde" de los clientes que no son Café Lumbre, con teléfonos ficticios `11 5555-01xx`.
+- Los calendarios de agosto y septiembre de Café Lumbre se entregaron a tiempo: cada pieza se hizo dos días antes de su fecha y se entregó el día anterior.
+- Los momentos del seed se guardan a las 15:00 de Buenos Aires, para que caigan en el día indicado.
 
 ## Calidad y proceso
 
