@@ -2,6 +2,7 @@ import type { Metadata, Route } from "next";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CalendarHeading } from "@/components/calendar/calendar-heading";
+import { ExportDialog } from "@/components/calendar/export-dialog";
 import { ImportCalendarDialog } from "@/components/calendar/import-calendar-dialog";
 import { PlanningCalendar } from "@/components/calendar/planning-calendar";
 import { ApprovedCalendar } from "@/components/calendar/approved-calendar";
@@ -13,6 +14,7 @@ import { findClientOr404 } from "@/db/queries/clients";
 import { CALENDAR_PERMISSIONS } from "@/domain/calendar-transitions";
 import { isNetwork, sortNetworks } from "@/domain/catalog";
 import { monthTitle, type MonthKey } from "@/domain/dates";
+import { exportFileName } from "@/domain/export";
 import { isSupportedMonth } from "@/domain/month-overview";
 import { missingCalendarText } from "@/domain/phrases";
 import { requireUser } from "@/server/session";
@@ -92,6 +94,13 @@ export default async function CalendarPage({ params, searchParams }: Props) {
               transition={transitionCalendar.bind(null, calendar.id)}
               remove={deleteCalendar.bind(null, calendar.id)}
               importDialog={importDialog}
+              exportDialog={
+                <ExportDialog
+                  printHref={`${hrefFor(month)}/imprimir`}
+                  excelHref={`${hrefFor(month)}/excel`}
+                  fileName={exportFileName(client.name, month)}
+                />
+              }
             />
           )
         }

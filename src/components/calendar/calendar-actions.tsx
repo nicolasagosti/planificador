@@ -32,6 +32,7 @@ export function CalendarActions({
   transition,
   remove,
   importDialog,
+  exportDialog,
 }: {
   month: MonthKey;
   status: CalendarStatus;
@@ -41,6 +42,8 @@ export function CalendarActions({
   transition: (action: Action) => Promise<CalendarResult>;
   remove: () => Promise<CalendarResult>;
   importDialog: ReactNode;
+  /** "Exportar para el cliente", in every state. */
+  exportDialog: ReactNode;
 }) {
   const [failure, setFailure] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -63,9 +66,10 @@ export function CalendarActions({
   return (
     <div className="flex flex-col items-end gap-2">
       <div className="flex flex-wrap justify-end gap-2">
+        {status === "draft" && importDialog}
+        {exportDialog}
         {status === "draft" && (
           <>
-            {importDialog}
             <Confirm
               trigger="Eliminar calendario"
               triggerClassName={cx(linkButton, "px-2")}

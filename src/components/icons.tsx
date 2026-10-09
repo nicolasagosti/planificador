@@ -67,7 +67,18 @@ export function PencilIcon(props: IconProps) {
   );
 }
 
-/** The mockup's download arrow ("Exportar para el cliente"), upside down. */
+/** The mockup's download arrow ("Exportar para el cliente"). */
+export function DownloadIcon(props: IconProps) {
+  return (
+    <LineIcon {...props}>
+      <path d="M12 4v11" />
+      <path d="M7 11l5 5 5-5" />
+      <path d="M5 20h14" />
+    </LineIcon>
+  );
+}
+
+/** The download arrow upside down ("Importar Excel o HTML"). */
 export function UploadIcon(props: IconProps) {
   return (
     <LineIcon {...props}>

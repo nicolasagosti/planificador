@@ -63,13 +63,13 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 
 ### Calendario aprobado (fase 6)
 
-- **Acciones de arriba.** "Exportar para el cliente" llega en la fase 8; hasta entonces no se muestra. "Reabrir calendario" llegó en la fase 7.
+- **Acciones de arriba.** "Exportar para el cliente" llegó en la fase 8 y "Reabrir calendario" en la 7.
 - **La pieza elegida** queda en la URL (`?pieza=`) sin recargar la página. Sin pieza en la URL, o si no es de ese calendario, se elige la primera sin entregar; si todas están entregadas, la primera del mes.
 - **Cambios de estado.** Se ven al instante en el panel, la grilla, la frase y los cuadraditos. El servidor los rechaza si el calendario no está aprobado o si la pieza ya no estaba en el estado que mostraba la pantalla; entonces todo vuelve atrás y el panel muestra el motivo con borde de tinta, sin rojo.
 - **Editar el link.** El mockup no muestra cómo se cambia un link ya cargado y la especificación pide que se pueda editar siempre: debajo del archivo va "Cambiar el link", en letra chica. "Pegar un link" y "Cambiar el link" abren en el panel los campos "Link" y "Nombre del archivo (opcional)", con "Guardar" ("Guardando…") y "Cancelar", y la aclaración "Para quitar el link, dejalo vacío y guardá."
 - **En el celular**, al elegir una pieza la página baja hasta el panel, que queda debajo de la grilla.
 - **El alto de los días** es de 142 px: el mockup pone 126 px más el relleno, sin `border-box`.
-- **Contraste con los PNG:** con "Así hacemos el flat white" elegida, la pantalla coincide con `03-calendario.png` salvo los dos botones de arriba y "Cambiar el link". Lo mismo con las variantes de la pieza atrasada, la entregada y el celular.
+- **Contraste con los PNG:** con "Así hacemos el flat white" elegida, la pantalla coincide con `03-calendario.png` salvo "Cambiar el link". Lo mismo con las variantes de la pieza atrasada, la entregada y el celular.
 
 ### Calendario en borrador y enviado (fase 7)
 
@@ -81,12 +81,21 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
   - Borrador: "Importar Excel o HTML", "Eliminar calendario" (con aspecto de link) y "Marcar como enviado" (botón principal con el avión de papel). Sin piezas, "Marcar como enviado" se ve apagado y debajo dice "Agregá al menos una pieza para poder enviarlo."
   - Enviado: "Volver a borrador" y "Marcar como aprobado" (principal).
   - Aprobado: "Reabrir calendario", con el candado del mockup.
-  - "Exportar para el cliente" llega en la fase 8.
+  - "Exportar para el cliente", en los tres estados, llegó en la fase 8.
 - **Confirmaciones**, en un diálogo con "Cancelar":
   - "¿Reabrir el calendario de octubre?": "Vuelve a borrador para que puedas cambiar fechas, temas e ideas. Las piezas conservan su estado, pero dejan de contar hasta que el cliente lo apruebe de nuevo." Botón "Reabrir calendario" ("Reabriendo…").
   - "¿Eliminar el calendario de octubre?": "Se borra con sus 6 piezas. No se puede deshacer." (o "No tiene piezas."), y si alguna vez se aprobó, "El cliente ya lo había aprobado: también se borra esa constancia." Botón "Eliminar calendario" ("Eliminando…"). Después se queda en el mes, que ofrece crear o importar otro.
 - **"Marcar como aprobado" en la pantalla Cliente** aprueba el calendario enviado sin salir de ahí.
 - **Al aprobar**, la copia guarda las piezas con el estado que tienen: un calendario reabierto conserva el de cada una.
+
+### Exportar (fase 8)
+
+- **"Exportar para el cliente"** va primero entre las acciones del mes, en los tres estados, con la flecha de descarga del mockup. Abre un diálogo con dos salidas:
+  - "Abrir para imprimir o guardar como PDF" (principal), con "Se abre en otra pestaña, en una hoja A4 apaisada.";
+  - "Descargar el Excel", con el nombre del archivo debajo.
+- **La vista para imprimir** (`/clientes/[clientId]/calendarios/[AAAA-MM]/imprimir`) vive en un grupo de rutas propio, `(print)`, para no llevar la barra de la app. Dice el nombre del cliente y "Calendario de contenido de octubre 2026", y en la tabla las fechas cortas ("jue 1 oct"), la red y el formato con su nombre, el tema y la idea. La hoja es A4 apaisada (`@page`), el encabezado de la tabla se repite en cada hoja y ninguna fila se corta entre dos. Sin piezas: "Todavía no hay piezas en este calendario."
+- **El Excel** sale de un route handler que exige sesión, con `write-excel-file` (mantenida, MIT, sin más dependencia que `fflate`, que ya estaba): una hoja con el nombre del mes ("Octubre 2026"), el encabezado en negrita, la fecha como fecha de Excel (`dd/mm/aaaa`), la hoja apaisada y la idea con ajuste de línea. Tiene los encabezados que lee la importación, así que el archivo puede volver a la app.
+- **Lo que no va:** el estado de cada pieza y el link de su archivo, que son de trabajo y no para el cliente.
 
 ### Textos propuestos (fase 3, a confirmar al ver cada pantalla)
 
