@@ -10,7 +10,7 @@ import {
   PIECE_REFUSAL_MESSAGES,
   planPieceMove,
 } from "@/domain/piece-transitions";
-import { assetInputSchema, idSchema } from "@/domain/schemas";
+import { assetInputSchema, idSchema, pieceInputSchema } from "@/domain/schemas";
 import { PIECE_STATUSES } from "@/domain/statuses";
 import { getDb } from "@/server/db";
 import { requireUser } from "@/server/session";
@@ -147,6 +147,138 @@ export async function updatePieceAsset(
         .update(pieces)
         .set({ assetUrl: parsed.data.url, assetName: parsed.data.name })
         .where(eq(pieces.id, id.data));
+      return { ok: true, clientId: piece.clientId, month: piece.month };
+    },
+  );
+
+  if (!result.ok) return result;
+  if (result.clientId && result.month) {
+    revalidateCalendar(result.clientId, result.month);
+  }
+  return { ok: true };
+}
+
+export type PieceField = "date" | "network" | "format" | "topic" | "idea";
+
+export type SavePieceResult =
+  | { ok: true; id: string }
+  | { ok: false; message: string }
+  | { ok: false; errors: Partial<Record<PieceField, string>> };
+
+const PIECE_FIELDS: readonly PieceField[] = [
+  "date",
+  "network",
+  "format",
+  "topic",
+  "idea",
+];
+
+const NOT_EDITABLE =
+  "Las piezas se cargan y se cambian solo en un calendario en borrador.";
+
+/**
+ * Creates a piece in a draft calendar (`pieceId` null) or changes one of
+ * its pieces. The date has to fall inside the calendar's month.
+ */
+export async function savePiece(
+  calendarId: string,
+  pieceId: string | null,
+  input: Record<PieceField, string>,
+): Promise<SavePieceResult> {
+  const user = await requireUser();
+  const calendar = idSchema.safeParse(calendarId);
+  const piece = pieceId === null ? null : idSchema.safeParse(pieceId);
+  if (!calendar.success || (piece && !piece.success)) {
+    return { ok: false, message: NOT_FOUND };
+  }
+
+  const result = await getDb().transaction(
+    async (
+      tx,
+    ): Promise<SavePieceResult & { clientId?: string; month?: string }> => {
+      const [row] = await tx
+        .select({
+          status: calendars.status,
+          month: calendars.month,
+          clientId: clients.id,
+        })
+        .from(calendars)
+        .innerJoin(clients, eq(clients.id, calendars.clientId))
+        .where(
+          and(eq(calendars.id, calendar.data), eq(clients.userId, user.id)),
+        )
+        .for("update", { of: calendars });
+      if (!row) return { ok: false, message: NOT_FOUND };
+      if (!CALENDAR_PERMISSIONS[row.status].editPieces) {
+        return { ok: false, message: NOT_EDITABLE };
+      }
+
+      const parsed = pieceInputSchema(row.month.slice(0, 7)).safeParse(input);
+      if (!parsed.success) {
+        const errors: Partial<Record<PieceField, string>> = {};
+        for (const issue of parsed.error.issues) {
+          const field = PIECE_FIELDS.find((name) => name === issue.path[0]);
+          if (field && !errors[field]) errors[field] = issue.message;
+        }
+        return { ok: false, errors };
+      }
+
+      if (piece) {
+        const updated = await tx
+          .update(pieces)
+          .set(parsed.data)
+          .where(
+            and(
+              eq(pieces.id, piece.data),
+              eq(pieces.calendarId, calendar.data),
+            ),
+          )
+          .returning({ id: pieces.id });
+        if (updated.length === 0) return { ok: false, message: NOT_FOUND };
+        return {
+          ok: true,
+          id: piece.data,
+          clientId: row.clientId,
+          month: row.month,
+        };
+      }
+      const [created] = await tx
+        .insert(pieces)
+        .values({ ...parsed.data, calendarId: calendar.data })
+        .returning({ id: pieces.id });
+      if (!created) return { ok: false, message: NOT_FOUND };
+      return {
+        ok: true,
+        id: created.id,
+        clientId: row.clientId,
+        month: row.month,
+      };
+    },
+  );
+
+  if (!result.ok) return result;
+  if (result.clientId && result.month) {
+    revalidateCalendar(result.clientId, result.month);
+  }
+  return { ok: true, id: result.id };
+}
+
+/** Deletes a piece of a draft calendar. */
+export async function deletePiece(pieceId: string): Promise<PieceResult> {
+  const user = await requireUser();
+  const id = idSchema.safeParse(pieceId);
+  if (!id.success) return { ok: false, message: NOT_FOUND };
+
+  const result = await getDb().transaction(
+    async (
+      tx,
+    ): Promise<PieceResult & { clientId?: string; month?: string }> => {
+      const piece = await lockedPiece(tx, id.data, user.id);
+      if (!piece) return { ok: false, message: NOT_FOUND };
+      if (!CALENDAR_PERMISSIONS[piece.calendarStatus].editPieces) {
+        return { ok: false, message: NOT_EDITABLE };
+      }
+      await tx.delete(pieces).where(eq(pieces.id, id.data));
       return { ok: true, clientId: piece.clientId, month: piece.month };
     },
   );

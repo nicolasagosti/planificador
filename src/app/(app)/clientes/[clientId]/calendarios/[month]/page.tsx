@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CalendarHeading } from "@/components/calendar/calendar-heading";
 import { ImportCalendarDialog } from "@/components/calendar/import-calendar-dialog";
+import { PlanningCalendar } from "@/components/calendar/planning-calendar";
 import { ApprovedCalendar } from "@/components/calendar/approved-calendar";
+import { CalendarActions } from "@/components/calendar/calendar-actions";
 import { CalendarStatusLine } from "@/components/calendar/calendar-status";
 import { primaryButton } from "@/components/ui/buttons";
 import { loadCalendar } from "@/db/queries/calendars";
@@ -16,7 +18,13 @@ import { missingCalendarText } from "@/domain/phrases";
 import { requireUser } from "@/server/session";
 import { today } from "@/server/today";
 import { createCalendar, importCalendar } from "../actions";
-import { movePiece, updatePieceAsset } from "../piece-actions";
+import { deleteCalendar, transitionCalendar } from "../calendar-actions";
+import {
+  deletePiece,
+  movePiece,
+  savePiece,
+  updatePieceAsset,
+} from "../piece-actions";
 
 type Props = PageProps<"/clientes/[clientId]/calendarios/[month]">;
 
@@ -32,9 +40,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${monthTitle(month)} · ${client.name} · Planificador` };
 }
 
-// An approved calendar shows its grid and the panel of the selected piece
-// (?pieza=). Drafts and sent calendars get their grid in phase 7; a month
-// without a calendar or a draft can import a file.
+// The calendar of a month: an approved one changes the state of its pieces,
+// a draft loads and edits them, a sent one shows them read only. The
+// selected piece stays in the URL (?pieza=). A month without a calendar
+// creates one or imports a file.
 export default async function CalendarPage({ params, searchParams }: Props) {
   await requireUser();
   const { client, month } = await load(params);
@@ -49,13 +58,14 @@ export default async function CalendarPage({ params, searchParams }: Props) {
   const canImport =
     client.archivedOn === null &&
     (calendar === null || CALENDAR_PERMISSIONS[calendar.status].importFile);
+  const defaultNetwork =
+    sortNetworks(client.networks).find(isNetwork) ?? "instagram";
+  const selectedId = typeof pieza === "string" ? pieza : null;
   const importDialog = canImport && (
     <ImportCalendarDialog
       month={month}
       action={importCalendar.bind(null, client.id, month)}
-      defaultNetwork={
-        sortNetworks(client.networks).find(isNetwork) ?? "instagram"
-      }
+      defaultNetwork={defaultNetwork}
       existingPieces={calendar?.pieces.length ?? 0}
     />
   );
@@ -72,7 +82,19 @@ export default async function CalendarPage({ params, searchParams }: Props) {
       <CalendarHeading
         month={month}
         hrefFor={hrefFor}
-        actions={calendar && importDialog}
+        actions={
+          calendar && (
+            <CalendarActions
+              month={month}
+              status={calendar.status}
+              pieceCount={calendar.pieces.length}
+              wasApproved={calendar.wasApproved}
+              transition={transitionCalendar.bind(null, calendar.id)}
+              remove={deleteCalendar.bind(null, calendar.id)}
+              importDialog={importDialog}
+            />
+          )
+        }
       />
 
       {calendar ? (
@@ -86,9 +108,22 @@ export default async function CalendarPage({ params, searchParams }: Props) {
               pieces={calendar.pieces}
               approvedOn={calendar.approvedOn ?? day}
               today={day}
-              initialSelectedId={typeof pieza === "string" ? pieza : null}
+              initialSelectedId={selectedId}
               movePiece={movePiece}
               updatePieceAsset={updatePieceAsset}
+            />
+          )}
+          {calendar.status !== "approved" && (
+            <PlanningCalendar
+              key={calendar.id}
+              month={month}
+              status={calendar.status}
+              pieces={calendar.pieces}
+              today={day}
+              initialSelectedId={selectedId}
+              defaultNetwork={defaultNetwork}
+              savePiece={savePiece.bind(null, calendar.id)}
+              deletePiece={deletePiece}
             />
           )}
         </>

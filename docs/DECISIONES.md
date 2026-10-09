@@ -51,7 +51,7 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 - **Crear calendarios se adelantó a esta fase.** La especificación lo pone en la fase 7, pero "Nuevo calendario", la frase de un mes sin calendario y la fila de Clientes lo necesitan. Crear un calendario lo deja en borrador y vacío, y abre su página. Si el mes ya tenía calendario, solo lo abre. Cargar piezas y las transiciones siguen en la fase 7.
 - **"Nuevo calendario"** abre un diálogo con un desplegable "Mes". Propone el primer mes sin calendario a partir del actual y ofrece desde dos meses atrás hasta un año adelante, sin los que ya tienen calendario. Botones "Crear calendario" ("Creando…" mientras espera) y "Cancelar".
 - **La página del calendario, por ahora,** tiene la ruta de navegación, el mes con sus flechas, la línea de estado y, si está aprobado, la frase con los números y los cuadraditos. Sin calendario: "Todavía no hay calendario de diciembre para Café Lumbre." y "Crear calendario". La grilla y el panel llegan en la fase 6.
-- **Mes enviado:** hasta que la fase 7 traiga "Marcar como aprobado", la frase ofrece "Abrir el calendario de octubre".
+- **Mes enviado:** desde la fase 7 la frase ofrece "Marcar como aprobado", que aprueba ahí mismo.
 - **Cliente archivado:**
   - La frase del mes se reemplaza por "Archivado el 6 oct. No aparece en Clientes y sus piezas no cuentan." y el botón "Desarchivar".
   - No muestra "Lo que sigue", "Nuevo calendario" ni "Archivar cliente", y el servidor no le crea calendarios: para armarle uno, primero se lo desarchiva.
@@ -63,13 +63,30 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 
 ### Calendario aprobado (fase 6)
 
-- **Acciones de arriba.** "Exportar para el cliente" llega en la fase 8 y "Reabrir calendario" en la 7; hasta entonces no se muestran.
+- **Acciones de arriba.** "Exportar para el cliente" llega en la fase 8; hasta entonces no se muestra. "Reabrir calendario" llegó en la fase 7.
 - **La pieza elegida** queda en la URL (`?pieza=`) sin recargar la página. Sin pieza en la URL, o si no es de ese calendario, se elige la primera sin entregar; si todas están entregadas, la primera del mes.
 - **Cambios de estado.** Se ven al instante en el panel, la grilla, la frase y los cuadraditos. El servidor los rechaza si el calendario no está aprobado o si la pieza ya no estaba en el estado que mostraba la pantalla; entonces todo vuelve atrás y el panel muestra el motivo con borde de tinta, sin rojo.
 - **Editar el link.** El mockup no muestra cómo se cambia un link ya cargado y la especificación pide que se pueda editar siempre: debajo del archivo va "Cambiar el link", en letra chica. "Pegar un link" y "Cambiar el link" abren en el panel los campos "Link" y "Nombre del archivo (opcional)", con "Guardar" ("Guardando…") y "Cancelar", y la aclaración "Para quitar el link, dejalo vacío y guardá."
 - **En el celular**, al elegir una pieza la página baja hasta el panel, que queda debajo de la grilla.
 - **El alto de los días** es de 142 px: el mockup pone 126 px más el relleno, sin `border-box`.
 - **Contraste con los PNG:** con "Así hacemos el flat white" elegida, la pantalla coincide con `03-calendario.png` salvo los dos botones de arriba y "Cambiar el link". Lo mismo con las variantes de la pieza atrasada, la entregada y el celular.
+
+### Calendario en borrador y enviado (fase 7)
+
+- **Las piezas** de un borrador y de uno enviado son blancas con borde fino, sin color de estado, con el cuadradito hueco de Clientes: punteado en borrador y sólido en enviado.
+- **Agregar una pieza:** cada día del borrador tiene un botón "+" ("Agregar una pieza el martes 6") al pie de la celda. En la computadora aparece al pasar el mouse por el día o al llegar con el teclado; en el celular está siempre.
+- **El panel del borrador** es el formulario de la pieza: "Fecha", "Red", "Formato" ("Elegí el formato" hasta elegirlo), "Tema" e "Idea". Una pieza nueva propone la primera red del cliente y dice "Nueva pieza", "Agregar pieza" y "Cancelar"; una cargada lleva su tema de título, "Guardar" ("Guardando…", y después "Guardado.") y "Eliminar pieza" ("Eliminando…"), sin confirmación. Sin pieza elegida: "Elegí una pieza para cambiarla, o tocá + en un día para agregar otra."
+- **El panel de un calendario enviado** muestra la pieza sin poder cambiarla y dice "Para cambiarla, volvé el calendario a borrador." Sin pieza elegida: "Elegí una pieza para ver su idea."
+- **Acciones, a la derecha del mes:**
+  - Borrador: "Importar Excel o HTML", "Eliminar calendario" (con aspecto de link) y "Marcar como enviado" (botón principal con el avión de papel). Sin piezas, "Marcar como enviado" se ve apagado y debajo dice "Agregá al menos una pieza para poder enviarlo."
+  - Enviado: "Volver a borrador" y "Marcar como aprobado" (principal).
+  - Aprobado: "Reabrir calendario", con el candado del mockup.
+  - "Exportar para el cliente" llega en la fase 8.
+- **Confirmaciones**, en un diálogo con "Cancelar":
+  - "¿Reabrir el calendario de octubre?": "Vuelve a borrador para que puedas cambiar fechas, temas e ideas. Las piezas conservan su estado, pero dejan de contar hasta que el cliente lo apruebe de nuevo." Botón "Reabrir calendario" ("Reabriendo…").
+  - "¿Eliminar el calendario de octubre?": "Se borra con sus 6 piezas. No se puede deshacer." (o "No tiene piezas."), y si alguna vez se aprobó, "El cliente ya lo había aprobado: también se borra esa constancia." Botón "Eliminar calendario" ("Eliminando…"). Después se queda en el mes, que ofrece crear o importar otro.
+- **"Marcar como aprobado" en la pantalla Cliente** aprueba el calendario enviado sin salir de ahí.
+- **Al aprobar**, la copia guarda las piezas con el estado que tienen: un calendario reabierto conserva el de cada una.
 
 ### Textos propuestos (fase 3, a confirmar al ver cada pantalla)
 

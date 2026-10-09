@@ -78,6 +78,16 @@ export function UploadIcon(props: IconProps) {
   );
 }
 
+/** The mockup's open lock ("Reabrir calendario"). */
+export function UnlockIcon(props: IconProps) {
+  return (
+    <LineIcon {...props}>
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 7.6-1.7" />
+    </LineIcon>
+  );
+}
+
 /** Filled ink circle with a white tick: "Aprobado". */
 export function ApprovedIcon({ size = 16, className }: IconProps) {
   return (

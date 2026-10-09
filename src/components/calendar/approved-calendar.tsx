@@ -1,6 +1,6 @@
 "use client";
 
-import { useOptimistic, useRef, useState, useTransition } from "react";
+import { useOptimistic, useState, useTransition } from "react";
 import type {
   AssetResult,
   PieceResult,
@@ -14,6 +14,7 @@ import { CalendarGrid } from "./calendar-grid";
 import { CalendarLegend } from "./calendar-legend";
 import { CalendarSummary } from "./calendar-status";
 import { PiecePanel, type PanelPiece } from "./piece-panel";
+import { useSelectedPiece } from "./use-selected-piece";
 
 type Move = { id: string; to: PieceStatus };
 
@@ -54,29 +55,23 @@ export function ApprovedCalendar({
     }),
   );
   const [, startTransition] = useTransition();
-  const [selectedId, setSelectedId] = useState(
-    () =>
-      pieces.find((piece) => piece.id === initialSelectedId)?.id ??
+  const {
+    selectedId,
+    select: selectPiece,
+    panelRef,
+  } = useSelectedPiece(
+    pieces.find((piece) => piece.id === initialSelectedId)?.id ??
       firstNotDelivered(pieces)?.id ??
       pieces[0]?.id ??
       null,
   );
   const [failure, setFailure] = useState<string | null>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
 
   const selected = shown.find((piece) => piece.id === selectedId) ?? null;
 
   function select(id: string) {
-    setSelectedId(id);
     setFailure(null);
-    const url = new URL(window.location.href);
-    url.searchParams.set("pieza", id);
-    window.history.replaceState(null, "", url);
-    // On a phone the panel is under the grid: bring it into view.
-    const panel = panelRef.current;
-    if (panel && panel.getBoundingClientRect().top > window.innerHeight) {
-      panel.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    selectPiece(id);
   }
 
   function move(piece: PanelPiece, to: PieceStatus) {

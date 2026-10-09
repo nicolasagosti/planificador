@@ -38,6 +38,7 @@ import { requireUser } from "@/server/session";
 import { today } from "@/server/today";
 import { unarchiveClient } from "../actions";
 import { createCalendar } from "./calendarios/actions";
+import { approveCalendar } from "./calendarios/calendar-actions";
 
 export async function generateMetadata({
   params,
@@ -113,6 +114,9 @@ export default async function ClientPage({
           day={day}
           href={calendarHref(currentMonth)}
           createAction={createCalendarAction}
+          approveAction={
+            current ? approveCalendar.bind(null, current.id) : undefined
+          }
         />
       )}
 
@@ -189,6 +193,7 @@ function CurrentMonth({
   day,
   href,
   createAction,
+  approveAction,
 }: {
   clientName: string;
   month: MonthKey;
@@ -196,6 +201,7 @@ function CurrentMonth({
   day: CalendarDay;
   href: Route;
   createAction: (formData: FormData) => Promise<void>;
+  approveAction: (() => Promise<void>) | undefined;
 }) {
   const state = clientMonthState(clientName, month, calendar, day);
 
@@ -233,13 +239,15 @@ function CurrentMonth({
               {state.actionLabel}
             </button>
           </form>
+        ) : state.kind === "sent" && approveAction ? (
+          <form action={approveAction}>
+            <button type="submit" className={secondaryButton}>
+              {state.actionLabel}
+            </button>
+          </form>
         ) : (
-          // Approving from here arrives with the calendar transitions; for
-          // now the calendar is opened.
           <Link href={href} className={secondaryButton}>
-            {state.kind === "draft"
-              ? state.actionLabel
-              : openCalendarLabel(month)}
+            {state.actionLabel}
           </Link>
         )}
       </div>

@@ -6,7 +6,7 @@ import { calendarDayIn, type CalendarDay } from "@/domain/today";
 import { appTimeZone } from "@/lib/env";
 import { getDb } from "@/server/db";
 import { requireUser } from "@/server/session";
-import { calendars, clients, pieces } from "../schema";
+import { calendarEvents, calendars, clients, pieces } from "../schema";
 
 // Every query reads the user from the session and filters by it: calendars
 // and pieces reach the user through their client.
@@ -115,7 +115,7 @@ export async function loadClientCalendars(
 export async function loadCalendar(
   clientId: string,
   month: MonthKey,
-): Promise<ClientCalendar | null> {
+): Promise<(ClientCalendar & { wasApproved: boolean }) | null> {
   const user = await requireUser();
   const [row] = await getDb()
     .select({
@@ -135,8 +135,23 @@ export async function loadCalendar(
     );
   if (!row) return null;
   const byCalendar = await piecesOf(user.id, [row.id]);
+  // A reopened calendar keeps the record of the approval in its events.
+  const [approval] = await getDb()
+    .select({ id: calendarEvents.id })
+    .from(calendarEvents)
+    .innerJoin(calendars, eq(calendars.id, calendarEvents.calendarId))
+    .innerJoin(clients, eq(clients.id, calendars.clientId))
+    .where(
+      and(
+        eq(calendarEvents.calendarId, row.id),
+        eq(calendarEvents.type, "approved"),
+        eq(clients.userId, user.id),
+      ),
+    )
+    .limit(1);
   return {
     id: row.id,
+    wasApproved: approval !== undefined,
     month,
     status: row.status,
     sentOn: dayOf(row.sentAt),
