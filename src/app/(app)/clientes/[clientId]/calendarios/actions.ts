@@ -14,13 +14,13 @@ import {
 import {
   CALENDAR_REFUSAL_MESSAGES,
   planCalendarImport,
-  type TimestampChange,
 } from "@/domain/calendar-transitions";
 import { firstDayOf } from "@/domain/dates";
 import { isSupportedMonth } from "@/domain/month-overview";
 import { calendarImportSchema, idSchema } from "@/domain/schemas";
 import { getDb } from "@/server/db";
 import { requireUser } from "@/server/session";
+import { timestampValue } from "@/server/timestamps";
 
 /**
  * Creates the client's calendar of the month in the form (a draft) and
@@ -60,13 +60,6 @@ export async function createCalendar(
 }
 
 export type ImportResult = { ok: true } | { ok: false; message: string };
-
-/** The value a transition gives a timestamp column, if it changes it. */
-function timestampValue(change: TimestampChange) {
-  if (change === "now") return sql`now()`;
-  if (change === "clear") return null;
-  return undefined;
-}
 
 /**
  * Loads the pieces read from an Excel or HTML file into the client's

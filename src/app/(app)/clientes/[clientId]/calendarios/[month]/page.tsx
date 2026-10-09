@@ -3,10 +3,8 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CalendarHeading } from "@/components/calendar/calendar-heading";
 import { ImportCalendarDialog } from "@/components/calendar/import-calendar-dialog";
-import {
-  CalendarStatusLine,
-  CalendarSummary,
-} from "@/components/calendar/calendar-status";
+import { ApprovedCalendar } from "@/components/calendar/approved-calendar";
+import { CalendarStatusLine } from "@/components/calendar/calendar-status";
 import { primaryButton } from "@/components/ui/buttons";
 import { loadCalendar } from "@/db/queries/calendars";
 import { findClientOr404 } from "@/db/queries/clients";
@@ -18,6 +16,7 @@ import { missingCalendarText } from "@/domain/phrases";
 import { requireUser } from "@/server/session";
 import { today } from "@/server/today";
 import { createCalendar, importCalendar } from "../actions";
+import { movePiece, updatePieceAsset } from "../piece-actions";
 
 type Props = PageProps<"/clientes/[clientId]/calendarios/[month]">;
 
@@ -33,12 +32,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${monthTitle(month)} · ${client.name} · Planificador` };
 }
 
-// The month's header for now, and importing a file into a month without a
-// calendar or a draft: the grid and the panel of pieces come with the next
-// phases.
-export default async function CalendarPage({ params }: Props) {
+// An approved calendar shows its grid and the panel of the selected piece
+// (?pieza=). Drafts and sent calendars get their grid in phase 7; a month
+// without a calendar or a draft can import a file.
+export default async function CalendarPage({ params, searchParams }: Props) {
   await requireUser();
   const { client, month } = await load(params);
+  const { pieza } = await searchParams;
   const calendar = await loadCalendar(client.id, month);
   const day = today();
   const hrefFor = (target: MonthKey) =>
@@ -79,7 +79,17 @@ export default async function CalendarPage({ params }: Props) {
         <>
           <CalendarStatusLine calendar={calendar} day={day} />
           {calendar.status === "approved" && (
-            <CalendarSummary calendar={calendar} month={month} day={day} />
+            <ApprovedCalendar
+              // Another month is another calendar: start from its own state.
+              key={calendar.id}
+              month={month}
+              pieces={calendar.pieces}
+              approvedOn={calendar.approvedOn ?? day}
+              today={day}
+              initialSelectedId={typeof pieza === "string" ? pieza : null}
+              movePiece={movePiece}
+              updatePieceAsset={updatePieceAsset}
+            />
           )}
         </>
       ) : (

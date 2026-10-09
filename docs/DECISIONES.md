@@ -61,6 +61,16 @@ Lo que la especificación no cubría o dejaba abierto, y cómo se resolvió. Apr
 - **Texto propuesto:** sin calendarios, "Todavía no armaste calendarios para este cliente."
 - **Contraste con los PNG:** con el mismo método que en Clientes, la pantalla coincide con `02-cliente.png` y con `02-cliente-movil.png` en todos los píxeles.
 
+### Calendario aprobado (fase 6)
+
+- **Acciones de arriba.** "Exportar para el cliente" llega en la fase 8 y "Reabrir calendario" en la 7; hasta entonces no se muestran.
+- **La pieza elegida** queda en la URL (`?pieza=`) sin recargar la página. Sin pieza en la URL, o si no es de ese calendario, se elige la primera sin entregar; si todas están entregadas, la primera del mes.
+- **Cambios de estado.** Se ven al instante en el panel, la grilla, la frase y los cuadraditos. El servidor los rechaza si el calendario no está aprobado o si la pieza ya no estaba en el estado que mostraba la pantalla; entonces todo vuelve atrás y el panel muestra el motivo con borde de tinta, sin rojo.
+- **Editar el link.** El mockup no muestra cómo se cambia un link ya cargado y la especificación pide que se pueda editar siempre: debajo del archivo va "Cambiar el link", en letra chica. "Pegar un link" y "Cambiar el link" abren en el panel los campos "Link" y "Nombre del archivo (opcional)", con "Guardar" ("Guardando…") y "Cancelar", y la aclaración "Para quitar el link, dejalo vacío y guardá."
+- **En el celular**, al elegir una pieza la página baja hasta el panel, que queda debajo de la grilla.
+- **El alto de los días** es de 142 px: el mockup pone 126 px más el relleno, sin `border-box`.
+- **Contraste con los PNG:** con "Así hacemos el flat white" elegida, la pantalla coincide con `03-calendario.png` salvo los dos botones de arriba y "Cambiar el link". Lo mismo con las variantes de la pieza atrasada, la entregada y el celular.
+
 ### Textos propuestos (fase 3, a confirmar al ver cada pantalla)
 
 Están en `src/domain/phrases.ts` y tienen tests. Los de la especificación salen tal cual; estos son los que no fijaba.
