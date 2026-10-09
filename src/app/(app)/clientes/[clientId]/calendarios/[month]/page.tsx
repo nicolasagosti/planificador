@@ -2,6 +2,7 @@ import type { Metadata, Route } from "next";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CalendarHeading } from "@/components/calendar/calendar-heading";
+import { ImportCalendarDialog } from "@/components/calendar/import-calendar-dialog";
 import {
   CalendarStatusLine,
   CalendarSummary,
@@ -9,12 +10,14 @@ import {
 import { primaryButton } from "@/components/ui/buttons";
 import { loadCalendar } from "@/db/queries/calendars";
 import { findClientOr404 } from "@/db/queries/clients";
+import { CALENDAR_PERMISSIONS } from "@/domain/calendar-transitions";
+import { isNetwork, sortNetworks } from "@/domain/catalog";
 import { monthTitle, type MonthKey } from "@/domain/dates";
 import { isSupportedMonth } from "@/domain/month-overview";
 import { missingCalendarText } from "@/domain/phrases";
 import { requireUser } from "@/server/session";
 import { today } from "@/server/today";
-import { createCalendar } from "../actions";
+import { createCalendar, importCalendar } from "../actions";
 
 type Props = PageProps<"/clientes/[clientId]/calendarios/[month]">;
 
@@ -30,8 +33,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${monthTitle(month)} · ${client.name} · Planificador` };
 }
 
-// The month's header for now: the grid and the panel of pieces come with the
-// next phases.
+// The month's header for now, and importing a file into a month without a
+// calendar or a draft: the grid and the panel of pieces come with the next
+// phases.
 export default async function CalendarPage({ params }: Props) {
   await requireUser();
   const { client, month } = await load(params);
@@ -39,6 +43,22 @@ export default async function CalendarPage({ params }: Props) {
   const day = today();
   const hrefFor = (target: MonthKey) =>
     `/clientes/${client.id}/calendarios/${target}` as Route;
+
+  // A file can fill a month without a calendar or a draft, unless the
+  // client is archived (it gets no new calendars).
+  const canImport =
+    client.archivedOn === null &&
+    (calendar === null || CALENDAR_PERMISSIONS[calendar.status].importFile);
+  const importDialog = canImport && (
+    <ImportCalendarDialog
+      month={month}
+      action={importCalendar.bind(null, client.id, month)}
+      defaultNetwork={
+        sortNetworks(client.networks).find(isNetwork) ?? "instagram"
+      }
+      existingPieces={calendar?.pieces.length ?? 0}
+    />
+  );
 
   return (
     <main className="mx-auto max-w-page px-8 pt-3 pb-18">
@@ -49,7 +69,11 @@ export default async function CalendarPage({ params }: Props) {
           { label: monthTitle(month) },
         ]}
       />
-      <CalendarHeading month={month} hrefFor={hrefFor} />
+      <CalendarHeading
+        month={month}
+        hrefFor={hrefFor}
+        actions={calendar && importDialog}
+      />
 
       {calendar ? (
         <>
@@ -65,12 +89,15 @@ export default async function CalendarPage({ params }: Props) {
           </p>
           {/* An archived client gets no new calendars. */}
           {client.archivedOn === null && (
-            <form action={createCalendar.bind(null, client.id)}>
-              <input type="hidden" name="month" value={month} />
-              <button type="submit" className={primaryButton}>
-                Crear calendario
-              </button>
-            </form>
+            <div className="flex flex-wrap gap-2">
+              <form action={createCalendar.bind(null, client.id)}>
+                <input type="hidden" name="month" value={month} />
+                <button type="submit" className={primaryButton}>
+                  Crear calendario
+                </button>
+              </form>
+              {importDialog}
+            </div>
           )}
         </div>
       )}

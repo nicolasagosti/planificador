@@ -108,6 +108,32 @@ Están en `src/domain/phrases.ts` y tienen tests. Los de la especificación sale
   - "No pudimos iniciar la sesión. Probá de nuevo en un momento."
 - Si se llegó al login desde otra página, después de entrar se vuelve a esa página. Solo se aceptan rutas de la app.
 
+## Importar calendarios
+
+Pedido por el cliente el 8 de octubre de 2026: arma los calendarios en Excel o en HTML y quiere cargarlos así. Cambia el "No construir: importar calendarios desde Excel" de la especificación y sigue lo que decía su sección 12 (columnas reconocidas y vista previa antes de confirmar). Se adelantó a las fases 6 y 7, como crear calendarios en la fase 5: hasta que llegue la grilla, lo importado se ve en la vista previa, en los números y en los cuadraditos.
+
+- **Dónde.** Botón "Importar Excel o HTML" en la pantalla del calendario: en un mes sin calendario, junto a "Crear calendario"; en un borrador, arriba a la derecha. En enviado y aprobado no está, porque sus piezas están bloqueadas, y un cliente archivado no recibe calendarios.
+- **Qué hace.** Crea el calendario si el mes no tenía y reemplaza las piezas del borrador; la vista previa avisa cuántas reemplaza. Con "El cliente ya lo aprobó" marcado, el calendario pasa a enviado y a aprobado en el momento, con sus dos eventos y la copia de las piezas tal como entraron; si no, queda en borrador. Las piezas conservan el estado del archivo y las fechas de "hecha" y "entregada" son las de la importación.
+- **Archivos.** Excel `.xlsx` (todas las hojas) y páginas `.html` (todas las tablas). Un `.xls` viejo se rechaza explicando cómo guardarlo como `.xlsx`. Hasta 20 MB y 200 piezas por mes.
+- **El archivo no sale del navegador.** Se lee ahí y al servidor llegan solo las piezas, que valida con Zod igual que el formulario de una pieza. No se guarda: no cambia "Subir archivos" de "No construir". Así el servidor nunca abre archivos que sube cualquier cuenta de Google.
+- **HTML que se arma con un script.** Los calendarios HTML del cliente tienen la tabla vacía en el archivo y la llenan con un script al abrirse. La página se abre en un marco oculto con `sandbox`, sin el origen de la app (no llega a sus páginas, cookies ni almacenamiento) y con la Content Security Policy de la app (no carga nada de otros sitios). Sus scripts propios reciben el nonce de la página, la única forma en que esa política los deja correr; los scripts externos, estilos, imágenes y marcos se sacan antes. Al terminar de cargar devuelve su HTML. Si no responde en 5 segundos, se lee el archivo tal como vino. `read-excel-file` se usa en su versión `universal`, que no arranca workers: la política no los permite.
+- **Cómo se encuentra la tabla.** Es la que tiene, en alguna de sus primeras 30 filas, una columna de fecha y otra de tema o de pieza; lo de arriba (títulos, notas) se saltea. Las tablas con las mismas columnas se leen como una (una por semana, una hoja por mes) y gana la que tiene más piezas del mes. Se saltean las filas vacías, las de una sola celda ("Semana 2") y los encabezados repetidos.
+- **Columnas.** Se reconocen por su título, sin importar mayúsculas ni tildes:
+  - fecha: "Fecha", "Día", "Fecha de publicación";
+  - red: "Red", "Redes", "Red social", "Plataforma";
+  - formato: "Formato", "Tipo", "Tipo de contenido";
+  - tema: "Tema", "Título", "Concepto";
+  - "Pieza": el formato en la primera línea y el tema debajo, como en el HTML del cliente ("Placa" / "Horarios del feriado"), o en una línea con dos puntos o guion;
+  - idea: "Idea", "Idea concreta", "Copy", "Descripción", "Texto", "Guion", "Detalle";
+  - estado: "Estado", "Filmación", "Filmado", "Subido", "Publicado".
+  - Las demás se suman a la idea, debajo, con su título: "Objetivo: …", "CTA: …". Así no se pierde nada del archivo.
+- **Fechas.** "6/10", "06/10/2026", "Mar 6/10", "martes 6 de octubre", "6 oct", "6" y las fechas de Excel. Sin año, el del calendario. Día y mes van en el orden argentino, salvo que solo el otro orden caiga en el mes del calendario. Las filas de otros meses no se importan y se cuentan aparte: "Importá el mismo archivo en noviembre para cargarla".
+- **Red.** Si el archivo no la dice, la vista previa pregunta y propone la primera red del cliente. Una fila con dos redes ("IG y FB") no se importa: en la app cada pieza tiene una sola.
+- **Placa.** Quinto formato (código `graphic`): "Placa", "la placa de Instagram". Es como el cliente llama a una imagen diseñada.
+- **Estados.** "Falta filmar" y "No subido" son pendiente, "Filmado" es hecha y "Subido" es entregada; también se entienden los nombres de la app. Pueden venir en una columna o en dos (filmación y subida): gana el más avanzado, así "Filmado" y "No subido" es hecha. La app sigue diciendo Pendiente, Hecha y Entregada.
+- **Filas con problemas.** La vista previa las lista con el motivo y el resto se puede importar igual: formato o red desconocidos, estado desconocido, falta la fecha o el tema, tema de más de 120 caracteres o idea de más de 2000 contando las columnas que se le suman.
+- **Textos propuestos:** "Importar Excel o HTML"; "Un Excel (.xlsx) o una página web (.html) con el calendario. Se importan las piezas de octubre."; "Leyendo el archivo…"; "Encontramos 9 piezas de octubre."; "El archivo no tiene piezas de octubre."; "1 fila no se importa:"; "El archivo no dice la red de 9 piezas. ¿En qué red van?"; "El cliente ya lo aprobó", con "Entra aprobado con fecha de hoy y sus piezas empiezan a contar, cada una en el estado que dice el archivo." o "Entra en borrador: lo enviás y lo aprobás desde el calendario."; "Reemplaza las 4 piezas que tiene el calendario."; "Importar 9 piezas" ("Importando…"); "No encontramos la tabla de piezas. Tiene que tener una columna de fecha y otra de tema (o de pieza), cada una con su título arriba."
+
 ## Acceso y seguridad
 
 - **Login con Google** (decidido el 6 de octubre de 2026, en lugar del email y la contraseña de la sección 7 de la especificación):
@@ -145,3 +171,6 @@ Están en `src/domain/phrases.ts` y tienen tests. Los de la especificación sale
 Se suman a la sección 12 de la especificación.
 
 - **Atrasadas de meses anteriores.** Todo se mira por mes: el 2 de noviembre, una pieza del 30 de octubre sin entregar no aparece en Clientes ni en la frase del Cliente. Solo se ve en octubre o en la tabla de calendarios del cliente. En la v1 queda así.
+- **Importar: el Excel real.** El lector se armó sobre un HTML real del cliente. Falta un Excel real para confirmar sus columnas y cómo escribe los estados.
+- **Importar: piezas en dos redes.** Si en sus archivos es común "IG y FB" en una fila, hay que decidir si se importa como dos piezas.
+- **Importar: actualizar un calendario aprobado.** Hoy se importa solo en un mes sin calendario o en borrador. Si quiere seguir llevando los estados en el Excel y volver a importarlo durante el mes, haría falta actualizar solo los estados de un calendario aprobado.

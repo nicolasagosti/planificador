@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   assetInputSchema,
+  calendarImportSchema,
   clientInputSchema,
   idSchema,
   isHttpUrl,
@@ -127,6 +128,47 @@ describe("pieceInputSchema", () => {
     );
     expect(firstError(october.safeParse({ ...valid, format: "x" }))).toBe(
       "Elegí el formato.",
+    );
+  });
+});
+
+describe("calendarImportSchema", () => {
+  const october = calendarImportSchema("2026-10");
+  const piece = {
+    date: "2026-10-06",
+    network: "instagram",
+    format: "graphic",
+    topic: " Horarios del feriado ",
+    idea: "",
+    status: "done",
+  };
+
+  it("takes the pieces with their state and whether it was approved", () => {
+    expect(october.parse({ approved: true, pieces: [piece] })).toEqual({
+      approved: true,
+      pieces: [{ ...piece, topic: "Horarios del feriado", idea: null }],
+    });
+  });
+
+  it("validates each piece like the form does", () => {
+    const withPiece = (change: object) =>
+      october.safeParse({ approved: false, pieces: [{ ...piece, ...change }] });
+    expect(firstError(withPiece({ date: "2026-11-02" }))).toBe(
+      "La fecha tiene que ser de octubre de 2026.",
+    );
+    expect(firstError(withPiece({ network: null }))).toBe("Elegí la red.");
+    expect(firstError(withPiece({ status: "filmado" }))).toBe(
+      "Elegí el estado.",
+    );
+  });
+
+  it("needs between 1 and 200 pieces", () => {
+    expect(firstError(october.safeParse({ approved: false, pieces: [] }))).toBe(
+      "El archivo no tiene piezas para importar.",
+    );
+    const pieces = Array.from({ length: 201 }, () => piece);
+    expect(firstError(october.safeParse({ approved: false, pieces }))).toBe(
+      "El archivo tiene más de 200 piezas de octubre: revisá que sea el calendario de un mes.",
     );
   });
 });

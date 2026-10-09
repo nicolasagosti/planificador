@@ -13,7 +13,15 @@ export const NETWORK_LABELS: Record<Network, { name: string; short: string }> =
     tiktok: { name: "TikTok", short: "TT" },
   };
 
-export const FORMATS = ["reel", "story", "carousel", "post"] as const;
+// "Placa" (a designed still image) came with importing calendars: it is the
+// name the community manager's files use for that format.
+export const FORMATS = [
+  "reel",
+  "story",
+  "carousel",
+  "post",
+  "graphic",
+] as const;
 export type Format = (typeof FORMATS)[number];
 
 const FORMAT_WORDS: Record<
@@ -24,6 +32,7 @@ const FORMAT_WORDS: Record<
   story: { label: "Historia", noun: "historia", article: "la" },
   carousel: { label: "Carrusel", noun: "carrusel", article: "el" },
   post: { label: "Post", noun: "post", article: "el" },
+  graphic: { label: "Placa", noun: "placa", article: "la" },
 };
 
 export const FORMAT_LABELS: Record<Format, string> = {
@@ -31,6 +40,7 @@ export const FORMAT_LABELS: Record<Format, string> = {
   story: FORMAT_WORDS.story.label,
   carousel: FORMAT_WORDS.carousel.label,
   post: FORMAT_WORDS.post.label,
+  graphic: FORMAT_WORDS.graphic.label,
 };
 
 export function isNetwork(value: string): value is Network {

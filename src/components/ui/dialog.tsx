@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { cx } from "@/lib/cx";
 
 /**
  * A button that opens a modal dialog (native <dialog>: focus stays inside,
@@ -19,11 +20,14 @@ export function Dialog({
   title,
   trigger,
   triggerClassName,
+  wide = false,
   children,
 }: {
   title: string;
   trigger: ReactNode;
   triggerClassName: string;
+  /** For content with a table, like an import's preview. */
+  wide?: boolean;
   children: (close: () => void) => ReactNode;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -58,7 +62,12 @@ export function Dialog({
         onClick={(event) => {
           if (event.target === event.currentTarget) close();
         }}
-        className="m-auto max-h-[calc(100dvh-2rem)] w-[min(36rem,calc(100vw-2rem))] overflow-y-auto rounded-button border-[1.5px] border-ink bg-surface p-0 text-ink backdrop:bg-ink/40"
+        className={cx(
+          "m-auto max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-button border-[1.5px] border-ink bg-surface p-0 text-ink backdrop:bg-ink/40",
+          wide
+            ? "w-[min(54rem,calc(100vw-2rem))]"
+            : "w-[min(36rem,calc(100vw-2rem))]",
+        )}
       >
         <div className="flex flex-col gap-5 p-6">
           <h2

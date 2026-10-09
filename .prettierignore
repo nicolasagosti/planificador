@@ -3,6 +3,10 @@ next-env.d.ts
 package-lock.json
 src/db/migrations
 
+# Files for the import tests, shaped like the ones the community manager
+# sends: never reformat
+e2e/fixtures
+
 # Specification, approved mockups and agent notes: never reformat
 docs
 *.md

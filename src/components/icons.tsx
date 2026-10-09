@@ -67,6 +67,17 @@ export function PencilIcon(props: IconProps) {
   );
 }
 
+/** The mockup's download arrow ("Exportar para el cliente"), upside down. */
+export function UploadIcon(props: IconProps) {
+  return (
+    <LineIcon {...props}>
+      <path d="M12 16V5" />
+      <path d="M7 9l5-5 5 5" />
+      <path d="M5 20h14" />
+    </LineIcon>
+  );
+}
+
 /** Filled ink circle with a white tick: "Aprobado". */
 export function ApprovedIcon({ size = 16, className }: IconProps) {
   return (

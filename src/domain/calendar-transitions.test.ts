@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   CALENDAR_PERMISSIONS,
   calendarActionsFrom,
+  planCalendarImport,
   planCalendarTransition,
   type CalendarAction,
 } from "./calendar-transitions";
@@ -111,5 +112,38 @@ describe("what each state allows", () => {
     expect(Object.values(CALENDAR_PERMISSIONS).every((p) => p.export)).toBe(
       true,
     );
+  });
+});
+
+describe("importing a file", () => {
+  it("fills a month without calendar or a draft", () => {
+    expect(
+      planCalendarImport({ calendarStatus: null, approved: false }),
+    ).toEqual({ ok: true, transitions: [] });
+    expect(
+      planCalendarImport({ calendarStatus: "draft", approved: false }),
+    ).toEqual({ ok: true, transitions: [] });
+  });
+
+  it("goes through sent and approved when the client already approved", () => {
+    const plan = planCalendarImport({ calendarStatus: null, approved: true });
+    expect(
+      plan.ok && plan.transitions.map((transition) => transition.event),
+    ).toEqual(["sent", "approved"]);
+    expect(
+      plan.ok && plan.transitions.map((transition) => transition.snapshot),
+    ).toEqual([false, true]);
+  });
+
+  it("never touches a calendar that was sent or approved", () => {
+    for (const calendarStatus of ["sent", "approved"] as const) {
+      for (const approved of [false, true]) {
+        expect(planCalendarImport({ calendarStatus, approved })).toEqual({
+          ok: false,
+          reason: "wrong-status",
+        });
+      }
+    }
+    expect(CALENDAR_PERMISSIONS.draft.importFile).toBe(true);
   });
 });

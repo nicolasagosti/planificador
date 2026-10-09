@@ -89,6 +89,30 @@ export function calendarActionsFrom(status: CalendarStatus): CalendarAction[] {
     .map((transition) => transition.action);
 }
 
+/**
+ * Importing a file replaces the pieces of a month without a calendar or of a
+ * draft. When the client already approved it outside the app, the calendar
+ * then goes through sent and approved at once: the same transitions, with
+ * their events and the copy of the pieces.
+ */
+export function planCalendarImport(input: {
+  calendarStatus: CalendarStatus | null;
+  approved: boolean;
+}):
+  | { ok: true; transitions: CalendarTransition[] }
+  | { ok: false; reason: "wrong-status" } {
+  if (
+    input.calendarStatus !== null &&
+    !CALENDAR_PERMISSIONS[input.calendarStatus].importFile
+  ) {
+    return { ok: false, reason: "wrong-status" };
+  }
+  return {
+    ok: true,
+    transitions: input.approved ? [TRANSITIONS.send, TRANSITIONS.approve] : [],
+  };
+}
+
 export const CALENDAR_REFUSAL_MESSAGES: Record<CalendarRefusal, string> = {
   "wrong-status":
     "El calendario cambió de estado mientras tanto. Recargá la página.",
@@ -102,6 +126,8 @@ export type CalendarPermissions = {
   editAssetLink: boolean;
   deleteCalendar: boolean;
   export: boolean;
+  /** Replace the pieces with the ones of an Excel or HTML file. */
+  importFile: boolean;
 };
 
 // An approved calendar locks the date, network, format, topic and idea of its
@@ -115,6 +141,7 @@ export const CALENDAR_PERMISSIONS: Record<CalendarStatus, CalendarPermissions> =
       editAssetLink: false,
       deleteCalendar: true,
       export: true,
+      importFile: true,
     },
     sent: {
       editPieces: false,
@@ -122,6 +149,7 @@ export const CALENDAR_PERMISSIONS: Record<CalendarStatus, CalendarPermissions> =
       editAssetLink: false,
       deleteCalendar: false,
       export: true,
+      importFile: false,
     },
     approved: {
       editPieces: false,
@@ -129,5 +157,6 @@ export const CALENDAR_PERMISSIONS: Record<CalendarStatus, CalendarPermissions> =
       editAssetLink: true,
       deleteCalendar: false,
       export: true,
+      importFile: false,
     },
   };

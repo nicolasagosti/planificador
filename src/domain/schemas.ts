@@ -1,6 +1,7 @@
 // Input validation (docs/SPEC.md, section 3). The Server Actions enforce it;
 // the forms reuse it for comfort. Messages are shown in the interface.
 import { z } from "zod";
+import { IMPORT_LIMITS, tooManyPiecesText } from "./calendar-import";
 import { FORMATS, NETWORKS, type Network } from "./catalog";
 import {
   firstDayOf,
@@ -9,6 +10,7 @@ import {
   monthOfYear,
   type MonthKey,
 } from "./dates";
+import { PIECE_STATUSES } from "./statuses";
 import { isCalendarDay } from "./today";
 
 /** Optional text: trimmed, and an empty value becomes null. */
@@ -90,6 +92,27 @@ export function pieceInputSchema(month: MonthKey) {
   });
 }
 export type PieceInput = z.output<ReturnType<typeof pieceInputSchema>>;
+
+/**
+ * An imported calendar: the pieces read from the file, each with its state,
+ * and whether the client already approved it outside the app.
+ */
+export function calendarImportSchema(month: MonthKey) {
+  return z.object({
+    approved: z.boolean({ error: "Indicá si el cliente ya lo aprobó." }),
+    pieces: z
+      .array(
+        pieceInputSchema(month).extend({
+          status: z.enum(PIECE_STATUSES, { error: "Elegí el estado." }),
+        }),
+      )
+      .min(1, "El archivo no tiene piezas para importar.")
+      .max(IMPORT_LIMITS.pieces, tooManyPiecesText(month)),
+  });
+}
+export type CalendarImportInput = z.input<
+  ReturnType<typeof calendarImportSchema>
+>;
 
 /** The file link of a piece. An empty link removes it, and its name too. */
 export const assetInputSchema = z

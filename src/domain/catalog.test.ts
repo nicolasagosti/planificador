@@ -14,12 +14,14 @@ describe("catalog", () => {
   it("names a piece's format and network", () => {
     expect(formatOnNetwork("reel", "instagram")).toBe("Reel en Instagram");
     expect(formatOnNetwork("story", "facebook")).toBe("Historia en Facebook");
+    expect(formatOnNetwork("graphic", "instagram")).toBe("Placa en Instagram");
   });
 
   it("uses the right article for each format", () => {
     expect(pieceNoun("post", "facebook")).toBe("el post de Facebook");
     expect(pieceNoun("story", "instagram")).toBe("la historia de Instagram");
     expect(pieceNoun("carousel", "tiktok")).toBe("el carrusel de TikTok");
+    expect(pieceNoun("graphic", "instagram")).toBe("la placa de Instagram");
   });
 
   it("lists networks in the catalog's order", () => {

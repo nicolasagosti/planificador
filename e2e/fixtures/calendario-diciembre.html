@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vivero Las Lilas · Calendario de diciembre</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{font:14px/1.5 'Montserrat',sans-serif;background:#FBF6EE;color:#453C34}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.tg{font-size:10px;text-transform:uppercase}
+table{width:100%;border-collapse:collapse}
+</style>
+</head>
+<body>
+<!-- The shape of the community manager's HTML calendars: the grid and the
+     table are empty in the file and a script fills them when it opens. -->
+<header style="padding:40px 6vw">
+<small>Vivero Las Lilas · 1 de diciembre al 1 de enero</small>
+<h1>Calendario de contenido</h1>
+</header>
+<main>
+<section id="cal"><h2>Diciembre</h2><div class="cal" id="c"></div></section>
+<section id="det">
+<h2 style="margin-top:34px">Qué se publica cada día</h2>
+<table id="t"><tr><th>Fecha</th><th>Pieza</th><th>Objetivo</th><th>Idea concreta</th><th>CTA</th></tr></table>
+</section>
+</main>
+<script>
+const P={"1/12":["Placa","Horarios de las fiestas"],"4/12":["Carrusel","Plantas para regalar"],"7/12":["Reel","Cómo trasplantar un potus"],"13/12":["Reel","Cuidados en verano"]};
+let h="";
+for(let i=0;i<35;i++){const d=new Date(2026,10,30+i),k=d.getDate()+"/"+(d.getMonth()+1),p=P[k];
+ h+='<div class="dc"><b>'+d.getDate()+'</b>'+(p?'<span class="tg">'+p[0]+'</span>'+p[1]:'')+'</div>'}
+document.getElementById("c").innerHTML=h;
+const D=[
+["Mar 1/12","Placa","Horarios de las fiestas","Avisar los horarios","Abrimos el 24 y el 31 hasta las 13.","Guardalo"],
+["Vie 4/12","Carrusel","Plantas para regalar","Vender para las fiestas","Cinco plantas fáciles de cuidar.","Escribinos por WhatsApp"],
+["Lun 7/12","Reel","Cómo trasplantar un potus","Aportar valor","Paso a paso en el vivero.","Guardalo"],
+["Jue 10/12","Video","Recorrida por el vivero","Mostrar el lugar","Sin voz, con música.","Vení a vernos"],
+["Dom 13/12","Reel","Cuidados en verano","Aportar valor","Riego y sombra.","Seguinos"],
+["Vie 1/1","Reel","Feliz año","Cerrar el año","Las plantas del equipo.","Vení a vernos"]];
+document.getElementById("t").insertAdjacentHTML("beforeend",D.map(r=>'<tr><td><b>'+r[0]+'</b></td><td><span class="tg">'+r[1]+'</span><br>'+r[2]+'</td><td>'+r[3]+'</td><td>'+r[4]+'</td><td>'+r[5]+'</td></tr>').join(""));
+</script>
+</body>
+</html>

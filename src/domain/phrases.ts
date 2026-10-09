@@ -445,7 +445,8 @@ export function goToMonthLabel(month: MonthKey): string {
   return `Ir a ${monthOfYear(month)}`;
 }
 
-const STATUS_NAMES: Record<PieceStatus, string> = {
+/** "Pendiente", "Hecha", "Entregada" */
+export const STATUS_NAMES: Record<PieceStatus, string> = {
   pending: "Pendiente",
   done: "Hecha",
   delivered: "Entregada",
